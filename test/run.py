@@ -22,7 +22,7 @@ if len(sys.argv) > 3:
 if len(sys.argv) > 2 and sys.argv[2] == 'cluster':
     # RUN ON CLUSTER
     run_process('./load_modules.sh') # load modules
-    run_process('mpicc -g -Wall -o ' + COMPILED_FILE + ' ' + filename) # compile
+    run_process('mpicc -o ' + COMPILED_FILE + ' ' + filename) # compile
     run_process('chmod 777 ./' + COMPILED_FILE)
     run_process('qsub' + options + ' ./' + COMPILED_FILE) # queue
 else:
