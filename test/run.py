@@ -2,7 +2,7 @@ import platform
 import os
 import sys
 
-COMPILED_FILE = 'output'
+COMPILED_FILE = './output'
 SUBMIT_SCRIPT = './submit_script.sh'
 
 if len(sys.argv) < 3:
@@ -16,7 +16,11 @@ new_submit_script = ''
 with open(SUBMIT_SCRIPT, 'r') as f:
     for line in f:
         if 'mpirun' in line:
-            new_submit_script += line.strip()[:-2] + './' + COMPILED_FILE + '\n'
+            new_line = ''
+            for element in line.strip().split(' ')[:-1]:
+                new_line += element + ' '
+            new_line += COMPILED_FILE
+            new_submit_script += new_line + '\n'
         else:
             new_submit_script += line
     f.close()
@@ -36,10 +40,10 @@ if len(sys.argv) > 2 and sys.argv[2] == 'cluster':
     # RUN ON CLUSTER
     run_process('./load_modules.sh') # load modules
     run_process('mpicc -o ' + COMPILED_FILE + ' ' + filename) # compile
-    run_process('chmod 777 ./' + COMPILED_FILE)
+    run_process('chmod 777 ' + COMPILED_FILE)
     run_process('qsub' + options + ' ' + SUBMIT_SCRIPT) # queue
 else:
     # RUN LOCALLY
     run_process('mpicc -g -Wall -o ' + COMPILED_FILE + ' ' + filename) # compile 
-    run_process('chmod 777 ./' + COMPILED_FILE)
-    run_process('mpiexec' + options + ' ./' + COMPILED_FILE)
+    run_process('chmod 777 ' + COMPILED_FILE)
+    run_process('mpiexec' + options + ' ' + COMPILED_FILE)
