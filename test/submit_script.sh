@@ -7,6 +7,8 @@
 #PBS –m abe
 #PBS -M rkaran3@uic.edu
 #PBS -N hello_world
+#PBS -e output.err
+#PBS -o output.out
 #PBS -d /export/home/rkaran3/working_directory/test
 
 mpirun -machinefile $PBS_NODEFILE -np $PBS_NP ./output
