@@ -37,9 +37,9 @@ if len(sys.argv) > 2 and sys.argv[2] == 'cluster':
     run_process('./load_modules.sh') # load modules
     run_process('mpicc -o ' + COMPILED_FILE + ' ' + filename) # compile
     run_process('chmod 777 ./' + COMPILED_FILE)
-    run_process('qsub' + options + ' ./' + COMPILED_FILE) # queue
+    run_process('qsub' + options + ' ' + SUBMIT_SCRIPT) # queue
 else:
     # RUN LOCALLY
     run_process('mpicc -g -Wall -o ' + COMPILED_FILE + ' ' + filename) # compile 
     run_process('chmod 777 ./' + COMPILED_FILE)
-    run_process('mpiexec' + options + ' ./' + SUBMIT_SCRIPT)
+    run_process('mpiexec' + options + ' ./' + COMPILED_FILE)
