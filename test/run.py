@@ -19,7 +19,7 @@ if len(sys.argv) > 3:
     for element in sys.argv[3:]:
         options += ' ' + element
 
-if len(sys.argv) > 2 and sys.argv[1] == 'cluster':
+if len(sys.argv) > 2 and sys.argv[2] == 'cluster':
     # RUN ON CLUSTER
     run_process('./load_modules.sh') # load modules
     run_process('mpicc -g -Wall -o ' + COMPILED_FILE + ' ' + filename) # compile
