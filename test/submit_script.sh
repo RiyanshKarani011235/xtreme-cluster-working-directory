@@ -3,7 +3,6 @@
 #PBS -l mem=20gb
 #PBS -l walltime=00:05:00
 #PBS -l nodes=1:ppn=8
-#PBS -j oe
 #PBS –m abe
 #PBS -M rkaran3@uic.edu
 #PBS -N hello_world
