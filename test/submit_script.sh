@@ -9,5 +9,4 @@
 #PBS -N hello_world
 #PBS -d /export/home/rkaran3/working_directory/test
 
-mpirun -machinefile $PBS_NODEFILE -np $PBS_NP $1
-
+mpirun -machinefile $PBS_NODEFILE -np $PBS_NP ./output

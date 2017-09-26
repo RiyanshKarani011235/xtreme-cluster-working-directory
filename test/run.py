@@ -3,6 +3,7 @@ import os
 import sys
 
 COMPILED_FILE = 'output'
+SUBMIT_SCRIPT = './submit_script.sh'
 
 if len(sys.argv) < 3:
     print('input format : detect_system.py [filename] [cluster/local] [options]')
@@ -10,6 +11,18 @@ if len(sys.argv) < 3:
 
 filename = sys.argv[1]
 options = ''
+
+new_submit_script = ''
+with open(SUBMIT_SCRIPT, 'r') as f:
+    for line in f:
+        if 'mpirun' in line:
+            new_submit_script += line.strip()[:-2] + './' + COMPILED_FILE + '\n'
+        else:
+            new_submit_script += line
+    f.close()
+with open(SUBMIT_SCRIPT, 'w') as f:
+    f.write(new_submit_script)
+    f.close()
 
 def run_process(command):
     print(command)
@@ -29,4 +42,4 @@ else:
     # RUN LOCALLY
     run_process('mpicc -g -Wall -o ' + COMPILED_FILE + ' ' + filename) # compile 
     run_process('chmod 777 ./' + COMPILED_FILE)
-    run_process('mpiexec' + options + ' ./' + COMPILED_FILE)
+    run_process('mpiexec' + options + ' ./' + SUBMIT_SCRIPT)
