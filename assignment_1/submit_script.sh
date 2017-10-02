@@ -1,12 +1,12 @@
 #!/bin/bash
-
-#PBS -l mem=20gb
-#PBS -l walltime=00:05:00
-#PBS -l nodes=1:ppn=8
-#PBS –m abe
+#PBS -l nodes=2:ppn=20,walltime=1:00
+#PBS -N MPIsample
+#PBS -q edu_shared
+#PBS -m abe
 #PBS -M rkaran3@uic.edu
-#PBS -N hello_world
-#PBS -j oe
-#PBS -d /export/home/rkaran3/working_directory/assignment_1
+#PBS -e mpitest.err
+#PBS -o mpitest.out
+#PBS -d /export/home/rkaran3/working_directory/test
 
-mpirun -machinefile $PBS_NODEFILE -np $PBS_NP ./output
+module load tools/mpich2-1.5-gcc
+mpirun -machinefile $PBS_NODEFILE -np $PBS_NP ./__main.o
