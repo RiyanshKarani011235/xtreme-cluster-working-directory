@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l nodes=2:ppn=20,walltime=1:00
+#PBS -l nodes=2:ppn=20,walltime=5:00
 #PBS -N MPIsample
 #PBS -q edu_shared
 #PBS -m abe
