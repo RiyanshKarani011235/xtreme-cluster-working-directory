@@ -56,12 +56,14 @@ int FIND_SUM(int p, int k, int n) {
 	MPI_Get_processor_name(processor_name, &name_len); 		// get the processor name
 	
 	gethostname(hostname, 255);								// non-MPI function to get the host name
-	// printf("Hello world! I am process number: %d from processor %s on host %s out of %d processors\n", rank, processor_name, hostname, world_size);
+	printf("Hello world! I am process number: %d from processor %s on host %s out of %d processors\n", rank, processor_name, hostname, world_size);
 	
 	int *ptr;
 	ptr = malloc(n * sizeof(int));	
 	int size;
-	int can_send = 0;
+	int can_send = 0; 	// flag that determines whether a node is waiting
+						// to receive data, or sending data to other nodes
+						// as per the recoursive doubling schedule
 
 	if(rank == 0) {
 		// generate a randomly initialized array
@@ -71,18 +73,6 @@ int FIND_SUM(int p, int k, int n) {
 			exit(1);
 		}
 		randInitArray(ptr, n);
-
-	// } else {
-	// 	int *ptr;
-	// 	ptr = malloc((n/2) * sizeof(int));
-	// 	if(ptr == NULL) {
-	// 		printf("could not allocate memory for the array\n");
-	// 		exit(1);
-	// 	}
-	// 	receive(ptr, n/2, 0);
-	// 	printArray(ptr, n/2);	
-	// 	free(ptr);
-
 	}
 
 	int mask = pow(2, log2(world_size))-1;
