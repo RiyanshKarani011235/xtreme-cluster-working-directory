@@ -1,93 +1,92 @@
-process 1 received 1000 integers from process: 0
-process 1 summing from elements 125 to 249
-process 1 sum = -3
-process 1 sent 1 integers to process: 0
-process 2 received 1000 integers from process: 0
-process 2 sent 1000 integers to process: 3
-process 2 summing from elements 250 to 374
-process 2 sum = -11
-process 2 received 1 integers from process: 3
-process 2 sent 1 integers to process: 0
-process 3 received 1000 integers from process: 2
-process 3 summing from elements 375 to 499
-process 3 sum = -36
-process 3 sent 1 integers to process: 2
-process 6 received 1000 integers from process: 4
-process 6 sent 1000 integers to process: 7
-process 6 summing from elements 750 to 874
-process 6 sum = -27
-process 6 received 1 integers from process: 7
-process 6 sent 1 integers to process: 4
-process 4 received 1000 integers from process: 0
-process 4 sent 1000 integers to process: 6
-process 4 sent 1000 integers to process: 5
-process 4 summing from elements 500 to 624
-process 4 sum = 73
-process 4 received 1 integers from process: 5
-process 4 received 1 integers from process: 6
-process 4 sent 1 integers to process: 0
-process 5 received 1000 integers from process: 4
-process 5 summing from elements 625 to 749
-process 5 sum = 32
+process 14 sent 1 integers to process: 12
 process 5 sent 1 integers to process: 4
-process 7 received 1000 integers from process: 6
-process 7 summing from elements 875 to 999
-process 7 sum = -21
-process 7 sent 1 integers to process: 6
-process 0 sent 1000 integers to process: 4
-process 0 sent 1000 integers to process: 2
-process 0 sent 1000 integers to process: 1
-process 0 summing from elements 0 to 124
-process 0 sum = 34
-process 0 received 1 integers from process: 1
-process 0 received 1 integers from process: 2
-process 0 received 1 integers from process: 4
-process 32 received 1 integers from process: 36
-process 32 received 1 integers from process: 34
-process 32 received 1 integers from process: 33
-process 32 sum = 0
-process 32 summing from elements 800 to 824
-process 1 sent 1 integers to process: 0
-process 3 sent 1 integers to process: 2
-process 2 sent 1 integers to process: 0
-process 2 received 1 integers from process: 3
-process 2 sum = -53
-process 2 summing from elements 250 to 374
-process 2 sent 1000 integers to process: 3
-process 2 received 1000 integers from process: 0
-process 4 sent 1 integers to process: 0
-process 4 received 1 integers from process: 6
-process 4 received 1 integers from process: 5
-process 4 sum = 4
-process 4 summing from elements 500 to 624
-process 4 sent 1000 integers to process: 5
-process 4 sent 1000 integers to process: 6
-process 4 received 1000 integers from process: 0
-process 5 sent 1 integers to process: 4
-process 5 sum = 0
-process 5 summing from elements 625 to 749
-process 5 received 1000 integers from process: 4
+process 5 sum = -1544
+process 5 summing from elements 312500 to 374999
+process 5 received 1000000 integers from process: 4
+process 13 sent 1 integers to process: 12
+process 13 sum = 1241
+process 13 summing from elements 812500 to 874999
+process 13 received 1000000 integers from process: 12
+process 14 received 1 integers from process: 15
+process 12 sent 1 integers to process: 8
+process 12 received 1 integers from process: 14
+process 12 received 1 integers from process: 13
+process 12 sum = 940
+process 12 summing from elements 750000 to 812499
+process 12 sent 1000000 integers to process: 13
+process 12 sent 1000000 integers to process: 14
+process 12 received 1000000 integers from process: 8
+process 15 sent 1 integers to process: 14
+process 15 sum = -486
+process 15 summing from elements 937500 to 999999
+process 15 received 1000000 integers from process: 14
+process 9 sent 1 integers to process: 8
+process 9 sum = -1080
+process 9 summing from elements 562500 to 624999
+process 9 received 1000000 integers from process: 8
 process 6 sent 1 integers to process: 4
 process 7 sent 1 integers to process: 6
-process 7 sum = 49
-process 7 summing from elements 875 to 999
-process 7 received 1000 integers from process: 6
-process 1 sum = -23
+process 7 sum = 264
+process 7 summing from elements 437500 to 499999
+process 7 received 1000000 integers from process: 6
+process 10 sent 1 integers to process: 8
+process 10 received 1 integers from process: 11
+process 10 sum = 405
+process 10 summing from elements 625000 to 687499
+process 10 sent 1000000 integers to process: 11
+process 10 received 1000000 integers from process: 8
+process 11 sent 1 integers to process: 10
+process 11 sum = 778
+process 11 summing from elements 687500 to 749999
+process 11 received 1000000 integers from process: 10
+process 0 received 1 integers from process: 8
 process 0 received 1 integers from process: 4
 process 0 received 1 integers from process: 2
-process 0 received 1 integers from process: 1
-process 0 sum = 20
-process 0 summing from elements 0 to 124
-process 0 sent 1000 integers to process: 1
-process 0 sent 1000 integers to process: 2
-process 0 sent 1000 integers to process: 4
-process 3 sum = 7
-process 3 summing from elements 375 to 499
-process 3 received 1000 integers from process: 2
+process 2 sent 1 integers to process: 0
+process 2 received 1 integers from process: 3
+process 3 sent 1 integers to process: 2
+process 4 sent 1 integers to process: 0
+process 8 sent 1 integers to process: 0
+process 8 received 1 integers from process: 12
+process 8 received 1 integers from process: 10
+process 8 received 1 integers from process: 9
+process 8 sum = 209
+process 8 summing from elements 500000 to 562499
+process 8 sent 1000000 integers to process: 9
+process 8 sent 1000000 integers to process: 10
+process 8 sent 1000000 integers to process: 12
+process 8 received 1000000 integers from process: 0
+process 1 sent 1 integers to process: 0
+process 1 sum = -879
+process 1 summing from elements 62500 to 124999
+process 1 received 1000000 integers from process: 0
+process 14 sum = 1109
+process 14 summing from elements 875000 to 937499
+process 14 sent 1000000 integers to process: 15
+process 14 received 1000000 integers from process: 12
 process 6 received 1 integers from process: 7
-process 6 sum = 37
-process 6 summing from elements 750 to 874
-process 6 sent 1000 integers to process: 7
-process 6 received 1000 integers from process: 4
-process 1 summing from elements 125 to 249
-process 1 received 1000 integers from process: 0
+process 6 sum = -376
+process 6 summing from elements 375000 to 437499
+process 6 sent 1000000 integers to process: 7
+process 6 received 1000000 integers from process: 4
+process 0 received 1 integers from process: 1
+process 0 sum = -809
+process 0 summing from elements 0 to 62499
+process 0 sent 1000000 integers to process: 1
+process 0 sent 1000000 integers to process: 2
+process 0 sent 1000000 integers to process: 4
+process 0 sent 1000000 integers to process: 8
+process 2 sum = -106
+process 2 summing from elements 125000 to 187499
+process 2 sent 1000000 integers to process: 3
+process 2 received 1000000 integers from process: 0
+process 3 sum = 548
+process 3 summing from elements 187500 to 249999
+process 3 received 1000000 integers from process: 2
+process 4 received 1 integers from process: 6
+process 4 received 1 integers from process: 5
+process 4 sum = 9
+process 4 summing from elements 250000 to 312499
+process 4 sent 1000000 integers to process: 5
+process 4 sent 1000000 integers to process: 6
+process 4 received 1000000 integers from process: 0
