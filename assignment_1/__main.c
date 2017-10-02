@@ -6,10 +6,10 @@
 #define MAX_ARRAY_ELEMENT 5
 #define NUM_PROCESSORS 1
 #define NUM_PROCESSES_PER_PROCESSOR 2
-#define ARRAY_LENGTH 100
+#define ARRAY_LENGTH 1000
 #define SOURCE_NODE 0
 
-int randImt();
+int randInt();
 int randInitArray(int *, int);
 int FIND_SUM(int, int, int);
 void printArray(int *, int);
@@ -49,9 +49,9 @@ int FIND_SUM(int p, int k, int n) {
 	ptr = malloc(n * sizeof(int));	
 	int can_send = 0; 	// flag that determines whether a node is waiting
 						// to receive data, or sending data to other nodes
-						// as per the recoursive doubling schedule
+						// as per the recursive doubling schedule
 
-	if(virtual_id == 0) {
+	if(virtual_id == SOURCE_NODE) {
 		// generate a randomly initialized array
 		can_send = 1;
 		if(ptr == NULL) {
@@ -59,6 +59,7 @@ int FIND_SUM(int p, int k, int n) {
 			exit(1);
 		}
 		randInitArray(ptr, n);
+		printArray(ptr, n);
 	}
 
 	// recursive doubling scatter
@@ -74,8 +75,52 @@ int FIND_SUM(int p, int k, int n) {
 		mask /= 2;
 	}
 
-	// sum
+	// calculating the part of the array for which this process
+	// will calculate the sum
+	int array_size_to_consider = floor((1.0*n)/k);
+	int array_start = array_size_to_consider*virtual_id;
+	
+	// boundary condition, when n is not divisible by k
+	// the last array will calculat the sum for n%k extra 
+	// elements of the array
+	if(virtual_id == k-1) {
+		array_size_to_consider += n%k;
+	}
 
+	char string[64];
+	snprintf(string, sizeof(string), "process %d summing from elements %d to %d\n", virtual_id, array_start, array_start+array_size_to_consider-1);
+	log_output(string);
+
+	int sum = 0;
+	for(int i=0; i<array_size_to_consider; i++) {
+		sum += *(ptr + array_start + i);
+	}
+
+	char s[64];
+	snprintf(s, sizeof(s), "process %d sum = %d\n", virtual_id, sum);
+	log_output(s);
+
+	// all to one reduction
+	can_send = 1;	// flag that determines whether a node has finished
+						// sending the data, since every node does this only
+						// once in all to one reduction
+	mask = 1;
+	for(int i=0; i<log2(k); i++) {
+		int check = pow(2, i);
+		mask = mask | check;
+		if((virtual_id & mask) == check) {
+			send(id, &sum, 1, id - check);
+			can_send = 0;
+		} else if(can_send) {
+			int sum_add;
+			receive(id, &sum_add, 1, id + check);
+			sum += sum_add;
+		}
+	}
+
+	if(virtual_id == SOURCE_NODE) {
+		printf("the total sum is : %d\n", sum);
+	}
 
 	// int next_split_start = n/2 + n%2;
 	// send(ptr + next_split_start, n/2, 1);
@@ -117,10 +162,10 @@ MPI_Send(
     int tag,
 	MPI_Comm communicator)
 */
-void send(int rank, int *ptr, int size, int destination_process_number) {
+void send(int id, int *ptr, int size, int destination_process_number) {
 	MPI_Send(ptr, size, MPI_INT, destination_process_number, 1, MPI_COMM_WORLD);
 	char s[64];
-	snprintf(s, sizeof(s), "process %d sent %d integers to process: %d\n", rank, size, destination_process_number);
+	snprintf(s, sizeof(s), "process %d sent %d integers to process: %d\n", id, size, destination_process_number);
 	log_output(s);
 }
 
@@ -134,10 +179,10 @@ MPI_Recv(
     MPI_Comm communicator,
     MPI_Status* status)
  */
-void receive(int rank, int *ptr, int size, int source_process_number) {
+void receive(int id, int *ptr, int size, int source_process_number) {
 	MPI_Recv(ptr, size, MPI_INT, source_process_number, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 	char s[64];
-	snprintf(s, sizeof(s), "process %d received %d integers from process: %d\n", rank, size, source_process_number);
+	snprintf(s, sizeof(s), "process %d received %d integers from process: %d\n", id, size, source_process_number);
 	log_output(s);
 }
 
