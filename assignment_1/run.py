@@ -4,6 +4,12 @@ import sys
 
 COMPILED_FILE = './output'
 SUBMIT_SCRIPT = './submit_script.sh'
+LOG_FILE = './output.log'
+
+try:
+    os.system('rm ' + LOG_FILE)
+except:
+    pass
 
 if len(sys.argv) < 3:
     print('input format : detect_system.py [filename] [cluster/local] [options]')
@@ -47,3 +53,5 @@ else:
     run_process('mpicc -g -Wall -o ' + COMPILED_FILE + ' ' + filename) # compile 
     run_process('chmod 777 ' + COMPILED_FILE)
     run_process('mpiexec' + options + ' ' + COMPILED_FILE)
+
+os.system('vim output.log')
