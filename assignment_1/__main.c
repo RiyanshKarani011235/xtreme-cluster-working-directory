@@ -120,7 +120,7 @@ int FIND_SUM(int p, int k, int n) {
 
 	if(virtual_id == SOURCE_NODE) {
 		char s[64];
-		snprintf("the total sum is : %d\n", sum);
+		snprintf(s, sizeof(s), "the total sum is : %d\n", sum);
 		log_output(s);
 	}
 
