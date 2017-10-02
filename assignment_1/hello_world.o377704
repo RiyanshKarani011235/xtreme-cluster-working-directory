@@ -1,0 +1,11 @@
+--------------------------------------------------------------------------
+mpirun was unable to launch the specified application as it could not access
+or execute an executable:
+
+Executable: ./output
+Node: compute-4-1.local
+
+while attempting to start process rank 0.
+--------------------------------------------------------------------------
+2 total processes failed to start
+Job complete
