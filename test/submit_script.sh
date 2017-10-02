@@ -9,4 +9,4 @@
 #PBS -d /export/home/rkaran3/working_directory/test
 
 module load tools/mpich2-1.5-gcc
-mpirun -machinefile $PBS_NODEFILE -np $PBS_NP ./mpitest
+mpirun -machinefile $PBS_NODEFILE -np $PBS_NP ./output

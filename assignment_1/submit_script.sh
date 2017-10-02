@@ -6,7 +6,7 @@
 #PBS -M rkaran3@uic.edu
 #PBS -e mpitest.err
 #PBS -o mpitest.out
-#PBS -d /export/home/rkaran3/working_directory/test
+#PBS -d /export/home/rkaran3/working_directory/assignment1
 
 module load tools/mpich2-1.5-gcc
-mpirun -machinefile $PBS_NODEFILE -np $PBS_NP ./__main.o
+mpirun -machinefile $PBS_NODEFILE -np $PBS_NP ./output
