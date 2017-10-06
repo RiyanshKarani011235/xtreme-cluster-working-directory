@@ -64,7 +64,7 @@ int FIND_SUM(int p, int k, int n) {
 		printArray(ptr, n);
 	}
 
-	// recursive doubling scatter
+	// recursive doubling broadcast
 	int mask = pow(2, log2(k))-1;
 	for(int i=log2(k)-1; i>=0; i--) {
 		int check = pow(2, i);
@@ -104,8 +104,8 @@ int FIND_SUM(int p, int k, int n) {
 
 	// all to one reduction
 	can_send = 1;	// flag that determines whether a node has finished
-						// sending the data, since every node does this only
-						// once in all to one reduction
+					// sending the data, since every node does this only
+					// once in all to one reduction
 	mask = 1;
 	for(int i=0; i<log2(k); i++) {
 		int check = pow(2, i);
