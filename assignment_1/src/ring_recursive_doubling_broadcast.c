@@ -6,7 +6,7 @@
 #define MAX_ARRAY_ELEMENT 5
 #define NUM_PROCESSORS 1
 #define NUM_PROCESSES_PER_PROCESSOR 2
-#define ARRAY_LENGTH 100
+#define ARRAY_LENGTH 1000
 #define SOURCE_NODE 0
 
 int randInt();
@@ -119,9 +119,7 @@ int FIND_SUM(int p, int k, int n) {
 	}
 
 	if(virtual_id == SOURCE_NODE) {
-		char s[64];
-		snprintf(s, sizeof(s), "the total sum is : %d\n", sum);
-		log_output(s);
+		printf("the total sum is : %d\n", sum);
 	}
 
 	// int next_split_start = n/2 + n%2;
