@@ -6,7 +6,7 @@
 #define MAX_ARRAY_ELEMENT 5
 #define NUM_PROCESSORS 1
 #define NUM_PROCESSES_PER_PROCESSOR 2
-#define ARRAY_LENGTH 1000000
+#define ARRAY_LENGTH 100
 #define SOURCE_NODE 0
 
 int randInt();
