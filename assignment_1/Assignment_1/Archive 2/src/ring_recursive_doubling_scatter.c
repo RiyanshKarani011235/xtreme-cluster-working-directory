@@ -6,7 +6,7 @@
 #define MAX_ARRAY_ELEMENT 5
 #define NUM_PROCESSORS 1
 #define NUM_PROCESSES_PER_PROCESSOR 2
-#define ARRAY_LENGTH 100000000
+#define ARRAY_LENGTH 100 
 #define SOURCE_NODE 0
 
 int randInt();
@@ -39,6 +39,8 @@ int main(int argc, char **argv) {
 
 int FIND_SUM(int p, int k, int n) { 
 
+	double start_time = MPI_Wtime();
+	
 	int id;
 	MPI_Comm_rank(MPI_COMM_WORLD, &id);			// get process rank number
 
@@ -63,13 +65,26 @@ int FIND_SUM(int p, int k, int n) {
 	}
 
 	// recursive doubling scatter
+	int num_to_distribute = n - (n%k);
+	int *start_ptr;
+	int *end_ptr;
+
+	if(virtual_id == SOURCE_NODE) {
+		start_ptr = ptr + (n%k);
+	} else {
+		start_ptr = ptr;
+	}
+	end_ptr = ptr + n - 1;
+
 	int mask = pow(2, log2(k))-1;
 	for(int i=log2(k)-1; i>=0; i--) {
 		int check = pow(2, i);
+		num_to_distribute = num_to_distribute / 2;
+		end_ptr = start_ptr + num_to_distribute;
 		if(can_send) {
-			send(id, ptr, n, id + check);
+			send(id, end_ptr, num_to_distribute, id + check);
 		} else if ((virtual_id & mask) == check) {
-			receive(id, ptr, n, id - check);
+			receive(id, start_ptr, num_to_distribute, id - check);
 			can_send = 1;
 		}
 		mask /= 2;
@@ -77,23 +92,22 @@ int FIND_SUM(int p, int k, int n) {
 
 	// calculating the part of the array for which this process
 	// will calculate the sum
-	int array_size_to_consider = floor((1.0*n)/k);
-	int array_start = array_size_to_consider*virtual_id;
+	int array_size_to_consider = (n - (n%k))/k;
 	
 	// boundary condition, when n is not divisible by k
-	// the last array will calculat the sum for n%k extra 
+	// the last array will calculate the sum for n%k extra 
 	// elements of the array
-	if(virtual_id == k-1) {
+	if(virtual_id == SOURCE_NODE) {
 		array_size_to_consider += n%k;
 	}
 
-	char string[64];
-	snprintf(string, sizeof(string), "process %d summing from elements %d to %d\n", virtual_id, array_start, array_start+array_size_to_consider-1);
-	log_output(string);
+	char string[100];
+	snprintf(string, sizeof(string), "process %d summing over the array : \n", virtual_id);
+	printArray(ptr, array_size_to_consider);
 
 	int sum = 0;
 	for(int i=0; i<array_size_to_consider; i++) {
-		sum += *(ptr + array_start + i);
+		sum += *(ptr + i);
 	}
 
 	char s[64];
@@ -102,8 +116,8 @@ int FIND_SUM(int p, int k, int n) {
 
 	// all to one reduction
 	can_send = 1;	// flag that determines whether a node has finished
-						// sending the data, since every node does this only
-						// once in all to one reduction
+					// sending the data, since every node does this only
+					// once in all to one reduction
 	mask = 1;
 	for(int i=0; i<log2(k); i++) {
 		int check = pow(2, i);
@@ -123,11 +137,13 @@ int FIND_SUM(int p, int k, int n) {
 		snprintf(s, sizeof(s), "the total sum is : %d\n", sum);
 		log_output(s);
 	}
-
-	// int next_split_start = n/2 + n%2;
-	// send(ptr + next_split_start, n/2, 1);
-	// printArray(ptr, n);	
+	
 	free(ptr);
+
+	double elapsed_time = MPI_Wtime() - start_time;
+	snprintf(string, sizeof(string), "");
+	snprintf(string, sizeof(string), "process %d elapsed time = %f\n", virtual_id, elapsed_time);
+	log_output(string);
 
 	MPI_Finalize();	
 	
@@ -201,4 +217,5 @@ void log_output(char * string) {
 	f = fopen("./output.log", "a+"); // a+ (create + append) option will allow appending which is useful in a log file
 	if (f == NULL) { /* Something is wrong   */}
 	fprintf(f, string);
-	// printf(string);
+	fclose(f);
+}

@@ -6,7 +6,7 @@
 #define MAX_ARRAY_ELEMENT 5
 #define NUM_PROCESSORS 1
 #define NUM_PROCESSES_PER_PROCESSOR 2
-#define ARRAY_LENGTH 100000000
+#define ARRAY_LENGTH 100
 #define SOURCE_NODE 0
 
 int randInt();
@@ -39,6 +39,8 @@ int main(int argc, char **argv) {
 
 int FIND_SUM(int p, int k, int n) { 
 
+	double start_time = MPI_Wtime();
+	
 	int id;
 	MPI_Comm_rank(MPI_COMM_WORLD, &id);			// get process rank number
 
@@ -62,7 +64,7 @@ int FIND_SUM(int p, int k, int n) {
 		printArray(ptr, n);
 	}
 
-	// recursive doubling scatter
+	// recursive doubling broadcast
 	int mask = pow(2, log2(k))-1;
 	for(int i=log2(k)-1; i>=0; i--) {
 		int check = pow(2, i);
@@ -102,8 +104,8 @@ int FIND_SUM(int p, int k, int n) {
 
 	// all to one reduction
 	can_send = 1;	// flag that determines whether a node has finished
-						// sending the data, since every node does this only
-						// once in all to one reduction
+					// sending the data, since every node does this only
+					// once in all to one reduction
 	mask = 1;
 	for(int i=0; i<log2(k); i++) {
 		int check = pow(2, i);
@@ -128,6 +130,11 @@ int FIND_SUM(int p, int k, int n) {
 	// send(ptr + next_split_start, n/2, 1);
 	// printArray(ptr, n);	
 	free(ptr);
+
+	double elapsed_time = MPI_Wtime() - start_time;
+	snprintf(string, sizeof(string), "");
+	snprintf(string, sizeof(string), "process %d elapsed time = %f\n", virtual_id, elapsed_time);
+	log_output(string);
 
 	MPI_Finalize();	
 	
@@ -201,4 +208,6 @@ void log_output(char * string) {
 	f = fopen("./output.log", "a+"); // a+ (create + append) option will allow appending which is useful in a log file
 	if (f == NULL) { /* Something is wrong   */}
 	fprintf(f, string);
+	fclose(f);
 	// printf(string);
+}
