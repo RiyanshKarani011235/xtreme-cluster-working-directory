@@ -62,7 +62,7 @@ int FIND_SUM(int p, int k, int n) {
 		printArray(ptr, n);
 	}
 
-	// recursive doubling scatter
+	// recursive doubling broadcast
 	int mask = pow(2, log2(k))-1;
 	for(int i=log2(k)-1; i>=0; i--) {
 		int check = pow(2, i);
@@ -101,7 +101,7 @@ int FIND_SUM(int p, int k, int n) {
 	log_output(s);
 
 	// all to one reduction
-	can_send = 1;	// flag that determines whether a node has finished
+	can_send = 1;		// flag that determines whether a node has finished
 						// sending the data, since every node does this only
 						// once in all to one reduction
 	mask = 1;
@@ -199,6 +199,4 @@ void log_output(char * string) {
 	f = fopen("./output.log", "a+"); // a+ (create + append) option will allow appending which is useful in a log file
 	if (f == NULL) { /* Something is wrong   */}
 	fprintf(f, string);
-	fclose(f);
-	// printf(string);
 }
