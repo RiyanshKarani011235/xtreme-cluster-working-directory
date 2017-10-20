@@ -30,6 +30,7 @@ int main(int argc, char **argv) {
 
     LU_Decomposition();
 
+    MPI_Finalize();
     return 0;
 }
 
@@ -56,7 +57,6 @@ int LU_Decomposition() {
 
     // cleanup
     free(ptr);
-    MPI_Finalize();
 }
 
 /*
