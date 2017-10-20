@@ -4,7 +4,7 @@
 #include <mpi.h>
 
 #define SOURCE_NODE                     0
-#define N                               4
+#define N                               32
 #define MAX_ARRAY_ELEMENT               20
 
 int LU_Decomposition();
@@ -97,10 +97,10 @@ int LU_Decomposition() {
             for(int j=k; j<N; j++) {
                 *(row + j) -= (*(temprow + j)) * pivot;
             }
-        }
 
-        printf("process %d for k = %d\n", id, k);
-        printArray(row, N);
+            printf("process %d for k = %d\n", id, k);
+            printArray(row, N);
+        }
     }
 
     // cleanup
