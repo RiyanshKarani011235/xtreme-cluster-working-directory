@@ -77,10 +77,10 @@ void printMatrix(int *ptr, int n) {
 }
 
 void log_output(char * string) {
-	FILE *f;
-	f = fopen("./output.log", "a+"); // a+ (create + append) option will allow appending which is useful in a log file
-	if (f == NULL) { /* Something is wrong   */}
-	fprintf(f, string);
-	fclose(f);
-	// printf(string);
+	// FILE *f;
+	// f = fopen("./output.log", "a+"); // a+ (create + append) option will allow appending which is useful in a log file
+	// if (f == NULL) { /* Something is wrong   */}
+	// fprintf(f, string);
+	// fclose(f);
+	printf(string);
 }
