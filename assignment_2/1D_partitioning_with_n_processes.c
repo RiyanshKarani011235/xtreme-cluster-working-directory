@@ -5,7 +5,7 @@
 
 #define SOURCE_NODE                     0
 #define N                               32
-#define MAX_ARRAY_ELEMENT               20
+#define MAX_ARRAY_ELEMENT               8
 
 int LU_Decomposition();
 int randInt();
@@ -95,7 +95,7 @@ int LU_Decomposition() {
             double pivot = (1.0 * (*(row + k))) / (*(temprow + k));
 
             for(int j=k; j<N; j++) {
-                *(row + j) -= (*(temprow + j)) * pivot;
+                *(row + j) -= (int) ((*(temprow + j)) * pivot);
             }
 
             printf("process %d for k = %d\n", id, k);
