@@ -4,7 +4,7 @@
 #include <mpi.h>
 
 #define SOURCE_NODE 0
-#define N 8
+#define N 4
 #define MAX_ARRAY_ELEMENT 4
 
 int LU_Decomposition();
