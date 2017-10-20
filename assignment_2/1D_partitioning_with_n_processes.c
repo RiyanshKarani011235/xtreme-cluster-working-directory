@@ -113,7 +113,7 @@ int LU_Decomposition() {
  * Generates a random integer in the range [-max, +max]
  */
 int randInt() {
-    return (rand() % (MAX_ARRAY_ELEMENT+1)) * pow(-1, (rand() % 2));
+    return (rand() % (MAX_ARRAY_ELEMENT+1));
 }
 
 /*
