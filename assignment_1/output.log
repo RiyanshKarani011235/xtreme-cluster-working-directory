@@ -1,0 +1,45 @@
+process 0 sent 48 integers to process: 4
+process 0 sent 24 integers to process: 2
+process 0 sent 12 integers to process: 1
+process 0 sum = 7
+process 2 received 24 integers from process: 0
+process 2 sent 12 integers to process: 3
+process 4 received 48 integers from process: 0
+process 2 sum = 10
+process 4 sent 24 integers to process: 6
+process 4 sent 12 integers to process: 5
+process 4 sum = 2
+process 1 received 12 integers from process: 0
+process 6 received 24 integers from process: 4
+process 1 sum = -2
+process 6 sent 12 integers to process: 7
+process 5 received 12 integers from process: 4
+process 1 sent 1 integers to process: 0
+process 6 sum = -7
+process 1 elapsed time = 0.005695
+process 5 sum = -21
+process 5 sent 1 integers to process: 4
+process 5 elapsed time = 0.005952
+process 3 received 12 integers from process: 2
+process 0 received 1 integers from process: 1
+process 3 sum = 8
+process 3 sent 1 integers to process: 2
+process 2 received 1 integers from process: 3
+process 3 elapsed time = 0.006277
+process 2 sent 1 integers to process: 0
+process 4 received 1 integers from process: 5
+process 2 elapsed time = 0.006475
+process 7 received 12 integers from process: 6
+process 7 sum = -18
+process 7 sent 1 integers to process: 6
+process 7 elapsed time = 0.007501
+process 0 received 1 integers from process: 2
+process 6 received 1 integers from process: 7
+process 6 sent 1 integers to process: 4
+process 4 received 1 integers from process: 6
+process 6 elapsed time = 0.008681
+process 4 sent 1 integers to process: 0
+process 4 elapsed time = 0.009302
+process 0 received 1 integers from process: 4
+the total sum is : -21
+process 0 elapsed time = 0.009721
