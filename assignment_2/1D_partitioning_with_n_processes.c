@@ -70,6 +70,9 @@ int randInt() {
  * utility function that prints a matrix
  */ 
 void printMatrix(int *ptr, int n) {
+    char s[64];
+    snprintf(s, sizeof(s), "printing a matrix of size %d x %d\n", n, n);
+    log_output(s);
     for(int i=0; i<n; i++) {
         for(int j=0; j<n; j++) {
             char s[64];
