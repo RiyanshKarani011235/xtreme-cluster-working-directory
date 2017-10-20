@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
 	
 	MPI_Init(NULL, NULL); 									// Initialize the MPI environment
 	MPI_Comm_size(MPI_COMM_WORLD, &world_size); 			// get total number of processes
-	MPI_Comm_rank(MPI_COMM_WORLD, &rank);						// get process rank number
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);					// get process rank number
 	MPI_Get_processor_name(processor_name, &name_len); 		// get the processor name
 	
 	gethostname(hostname, 255);								// non-MPI function to get the host name

@@ -3,9 +3,9 @@
 #include <math.h>
 #include <mpi.h>
 
-#define SOURCE_NODE 0
-#define N 4
-#define MAX_ARRAY_ELEMENT 4
+#define SOURCE_NODE                     0
+#define N                               4
+#define MAX_ARRAY_ELEMENT               4
 
 int LU_Decomposition();
 int randInt();
@@ -30,7 +30,6 @@ int main(int argc, char **argv) {
 
     LU_Decomposition();
 
-    MPI_Finalize();
     return 0;
 }
 
@@ -57,6 +56,7 @@ int LU_Decomposition() {
 
     // cleanup
     free(ptr);
+    MPI_Finalize();
 }
 
 /*
