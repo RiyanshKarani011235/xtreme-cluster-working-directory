@@ -53,6 +53,10 @@ int LU_Decomposition() {
     for(int k=0; k<N; k++) {
 
     }
+
+    // cleanup
+    free(ptr);
+    MPI_Finalize();
 }
 
 /*
