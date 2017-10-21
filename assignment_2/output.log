@@ -1,22 +1,29 @@
 printing a matrix of size 4 x 4
-17 -14 0 4 
-7 16 -16 -19 
-0 5 -9 8 
--11 13 6 9 
+1 1 6 2 
+8 0 0 8 
+2 6 7 6 
+0 8 4 0 
 process 0 sent 4 integers to process: 1
 process 1 received 4 integers from process: 0
+process 0 sent 4 integers to process: 2
+process 0 sent 4 integers to process: 3
+process 2 received 4 integers from process: 0
+process 3 received 4 integers from process: 0
+process 0 sent 4 integers to process: 1
 process 0 sent 4 integers to process: 2
 process 2 received 4 integers from process: 0
 process 0 sent 4 integers to process: 3
-process 3 received 4 integers from process: 0
-process 0 sent 4 integers to process: 1
 process 1 received 4 integers from process: 0
-process 0 sent 4 integers to process: 2
-ss: 0
-process 2 received 4 integers from process: 1
-process 1 sent 4 integers to process: 2
 process 3 received 4 integers from process: 0
-process 0 sent 4 integers to process: 3
-process 2 sent 4 integers to process: 3
+process 1 sent 4 integers to process: 2
+process 1 sent 4 integers to process: 3
+process 2 received 4 integers from process: 1
 process 3 received 4 integers from process: 1
+process 1 sent 1 integers to process: 0
+process 0 received 1 integers from process: 1
 process 3 received 4 integers from process: 2
+process 2 sent 4 integers to process: 3
+process 3 sent 1 integers to process: 0
+process 0 received 1 integers from process: 2
+process 2 sent 1 integers to process: 0
+process 0 received 1 integers from process: 3
