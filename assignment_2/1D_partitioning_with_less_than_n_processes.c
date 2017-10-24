@@ -4,8 +4,7 @@
 #include <mpi.h>
 
 #define SOURCE_NODE                     0
-#define N                               128
-#define NUM_PROCESSES                   32
+#define N                               4
 #define MAX_ARRAY_ELEMENT               8
 
 int LU_Decomposition();
@@ -42,10 +41,9 @@ int LU_Decomposition() {
     int id;
     MPI_Comm_rank(MPI_COMM_WORLD, &id);			// get process rank number
     
-    int rows_per_process = N / NUM_PROCESSES;
     int * row;
     int * temprow;
-    row = malloc(rows_per_process * sizeof(int));
+    row = malloc(N * sizeof(int));
     temprow = malloc(N * sizeof(int));
 
     if(id == SOURCE_NODE) {
@@ -66,14 +64,14 @@ int LU_Decomposition() {
         printMatrix(ptr, N);
 
         // brodcast each row of the array to the corresponding processor
-        for(int k=0; k<N; k+=rows_per_process) {
+        for(int k=0; k<N; k++) {
             if(k != SOURCE_NODE) {
-                send(SOURCE_NODE, ptr + (k*N), N*rows_per_process, k);
+                send(SOURCE_NODE, ptr + (k*N), N, k);
             }
         }
 
-        // store the rows used by the source processor
-        memcpy(row, ptr + (N*SOURCE_NODE), N * rows_per_process * sizeof(int));
+        // store the one row used by the source processor
+        memcpy(row, ptr + (N*SOURCE_NODE), N * sizeof(int));
 
         // free the matrix since it will no longer be used
         // only the rows will be used to compute the LU Decomposition
@@ -105,6 +103,32 @@ int LU_Decomposition() {
         }
     }
 
+    // Gaussian elimination Done, now we need to find the
+    // determinant of the array. Each process p_k has to 
+    // calculate A[k][k] * A[k][k], and the source node will 
+    // perform an all to one accumulation
+    int determinant = pow(*(row + id), 2);
+    int * buff_determinant = malloc(sizeof(int));
+    if(id == SOURCE_NODE) {
+        for(int i=0; i<N; i++) {
+            if(i != id) {
+                receive(id, buff_determinant, 1, i);
+                determinant += *(buff_determinant);
+            }
+        }
+    } else {
+        buff_determinant = &(determinant);
+        send(id, buff_determinant, 1, SOURCE_NODE);
+    }
+
+    // print the determinant
+    if(id == SOURCE_NODE) {
+        printf("****************************************\n");
+        printf("****************************************\n");
+        printf("determinant : %d\n", determinant);
+        printf("****************************************\n");
+        printf("****************************************\n");
+    }
     // cleanup
     free(row);
     free(temprow);
