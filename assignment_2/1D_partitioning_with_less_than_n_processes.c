@@ -6,7 +6,7 @@
 #define SOURCE_NODE                     0
 #define N                               64
 #define MAX_ARRAY_ELEMENT               8
-#define NUM_PROCESSES                   16
+#define NUM_PROCESSES                   8
 
 int LU_Decomposition();
 int randInt();
