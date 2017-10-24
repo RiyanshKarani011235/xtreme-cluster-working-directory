@@ -107,13 +107,13 @@ int FIND_DET() {
     // determinant of the array. Each process p_k has to 
     // calculate A[k][k] * A[k][k], and the source node will 
     // perform an all to one accumulation
-    int determinant = pow(*(row + id), 2);
+    int determinant = *(row + id);
     int * buff_determinant = malloc(sizeof(int));
     if(id == SOURCE_NODE) {
         for(int i=0; i<N; i++) {
             if(i != id) {
                 receive(id, buff_determinant, 1, i);
-                determinant += *(buff_determinant);
+                determinant *= *(buff_determinant);
             }
         }
     } else {
