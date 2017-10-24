@@ -4,8 +4,9 @@
 #include <mpi.h>
 
 #define SOURCE_NODE                     0
-#define N                               4
+#define N                               8
 #define MAX_ARRAY_ELEMENT               8
+#define NUM_PROCESSES                   4
 
 int LU_Decomposition();
 int randInt();
@@ -41,9 +42,11 @@ int LU_Decomposition() {
     int id;
     MPI_Comm_rank(MPI_COMM_WORLD, &id);			// get process rank number
     
+    const int NUM_ROWS_PER_PROCESS = N / NUM_PROCESSES; 
+
     int * row;
     int * temprow;
-    row = malloc(N * sizeof(int));
+    row = malloc(N * NUM_ROWS_PER_PROCESS * sizeof(int));
     temprow = malloc(N * sizeof(int));
 
     if(id == SOURCE_NODE) {
@@ -63,15 +66,16 @@ int LU_Decomposition() {
 
         printMatrix(ptr, N);
 
-        // brodcast each row of the array to the corresponding processor
-        for(int k=0; k<N; k++) {
+        // brodcast NUM_ROWS_PER_PROCESS rows of 
+        // the array to the corresponding processor
+        for(int k=0; k<N; k+=NUM_ROWS_PER_PROCESS) {
             if(k != SOURCE_NODE) {
-                send(SOURCE_NODE, ptr + (k*N), N, k);
+                send(SOURCE_NODE, ptr + (k*N), N*NUM_ROWS_PER_PROCESS, k/NUM_ROWS_PER_PROCESS);
             }
         }
 
-        // store the one row used by the source processor
-        memcpy(row, ptr + (N*SOURCE_NODE), N * sizeof(int));
+        // store the rows used by the source processor
+        memcpy(row, ptr + (N*SOURCE_NODE), N * NUM_ROWS_PER_PROCESS * sizeof(int));
 
         // free the matrix since it will no longer be used
         // only the rows will be used to compute the LU Decomposition
@@ -79,27 +83,63 @@ int LU_Decomposition() {
     } else {
         // receive the row corresponding to this processor,
         // from the source node
-        receive(id, row, N, SOURCE_NODE);
-    }
+        receive(id, row, N*NUM_ROWS_PER_PROCESS, SOURCE_NODE);
+   }
 
-    printArray(row, N);
+    printArray(row, N * NUM_ROWS_PER_PROCESS);
 
     // kth iteration of Gaussian Elimination
     for(int k=0; k<N; k++) {
-        if(id == k) {
-            for(int i=k+1; i<N; i++) {
-                send(id, row, N, i);
-            }
-        } else if(id > k){
-            receive(id, temprow, N, k);
-            double pivot = (1.0 * (*(row + k))) / (*(temprow + k));
 
-            for(int j=k; j<N; j++) {
-                *(row + j) -= (int) ((*(temprow + j)) * pivot);
+        // calculate the process rank that is supposed
+        // to handle the kth row for gaussian elemination
+        int active_row_process_id = k / NUM_ROWS_PER_PROCESS;
+
+        char s[64];
+        snprintf(s, sizeof(s), "id: %d, k: %d, active process: %d\n", id, k, active_row_process_id);
+        log_output(s);
+
+        if(id == active_row_process_id) {
+            // the current row in gaussian elimination belongs
+            // to this processor
+            for(int i=active_row_process_id+1; i<NUM_PROCESSES; i++) {
+                send(id, row + ((k % NUM_ROWS_PER_PROCESS) * N), N, i);
             }
 
-            printf("process %d for k = %d\n", id, k);
-            printArray(row, N);
+            // perform elimination on other rows belonging to this processor
+            for(int i=(k%NUM_ROWS_PER_PROCESS)+1; i<NUM_ROWS_PER_PROCESS; i++) {
+                printf("process %d for k = %d\n", id, k);
+
+                temprow = row;
+
+                double pivot = (1.0 * (*(row + (i*N) + k))) / (*(temprow + k));
+
+                printf("pivot: %lf\n", pivot);
+                
+                for(int j=k; j<N; j++) {
+                    *(row + (i*N) + j) -= (int) ((*(temprow + j)) * pivot);
+                }
+
+                for(int j=0; j<NUM_ROWS_PER_PROCESS; j++) {
+                    printArray(row + (N*j), N);
+                }
+            }
+
+        } else if(id > active_row_process_id){
+            // the current row in gaussian elimination does
+            // not belong to this processor
+            receive(id, temprow, N, active_row_process_id);
+
+            for(int i=0; i<NUM_ROWS_PER_PROCESS; i++) {
+                double pivot = (1.0 * (*(row + (i*N) + k))) / (*(temprow + k));
+
+                for(int j=k; j<N; j++) {
+                    *(row + (i*N) + j) -= (int) ((*(temprow + j)) * pivot);
+                }
+
+                printf("process %d for k = %d\n", id, k);
+                printArray(row, N);
+            }
         }
     }
 
@@ -107,10 +147,24 @@ int LU_Decomposition() {
     // determinant of the array. Each process p_k has to 
     // calculate A[k][k] * A[k][k], and the source node will 
     // perform an all to one accumulation
-    int determinant = pow(*(row + id), 2);
+
+    int determinant = 0;
     int * buff_determinant = malloc(sizeof(int));
+
+    for(int k=0; k<N; k++) {
+        // calculate the process rank that is supposed
+        // to handle the kth row for calculating determinant
+        int active_row_process_id = k / NUM_ROWS_PER_PROCESS;
+
+        // calculate the square of kth diagonal element
+        if(id == active_row_process_id) {
+            int row_number = k % NUM_ROWS_PER_PROCESS;
+            determinant += pow(*(row + (N * row_number) + k), 2);
+        }
+    }
+
     if(id == SOURCE_NODE) {
-        for(int i=0; i<N; i++) {
+        for(int i=0; i<NUM_PROCESSES; i++) {
             if(i != id) {
                 receive(id, buff_determinant, 1, i);
                 determinant += *(buff_determinant);
@@ -129,17 +183,22 @@ int LU_Decomposition() {
         printf("****************************************\n");
         printf("****************************************\n");
     }
+
     // cleanup
+    // since temprow was assigned to row previously, freeing
+    // both temprow and row would lead to an error because you
+    // are freeing the same memory location twice. To get
+    // past this problem you make temprow point to row
+    temprow = row;
     free(row);
-    free(temprow);
     MPI_Finalize();
 }
 
 /*
- * Generates a random integer in the range [-max, +max]
+ * Generates a random integer in the range [1, max+1]
  */
 int randInt() {
-    return (rand() % (MAX_ARRAY_ELEMENT+1));
+    return ((rand() % (MAX_ARRAY_ELEMENT+1)) + 1);
 }
 
 /*
