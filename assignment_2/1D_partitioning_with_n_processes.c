@@ -31,12 +31,12 @@ int main(int argc, char **argv) {
     gethostname(hostname, 255);								// non-MPI function to get the host name
     printf("Hello world! I am process number: %d from processor %s on host %s out of %d processors\n", rank, processor_name, hostname, world_size);
 
-    LU_Decomposition();
+    FIND_DET();
 
     return 0;
 }
 
-int LU_Decomposition() {
+int FIND_DET() {
 
     int id;
     MPI_Comm_rank(MPI_COMM_WORLD, &id);			// get process rank number
