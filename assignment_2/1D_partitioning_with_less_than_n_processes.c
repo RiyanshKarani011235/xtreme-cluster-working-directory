@@ -148,7 +148,7 @@ int FIND_DET() {
     // calculate A[k][k] * A[k][k], and the source node will 
     // perform an all to one accumulation
 
-    int determinant = 0;
+    int determinant = 1;
     int * buff_determinant = malloc(sizeof(int));
 
     for(int k=0; k<N; k++) {
@@ -159,7 +159,7 @@ int FIND_DET() {
         // calculate the square of kth diagonal element
         if(id == active_row_process_id) {
             int row_number = k % NUM_ROWS_PER_PROCESS;
-            determinant += pow(*(row + (N * row_number) + k), 2);
+            determinant *= *(row + (N * row_number) + k);
         }
     }
 
@@ -167,7 +167,7 @@ int FIND_DET() {
         for(int i=0; i<NUM_PROCESSES; i++) {
             if(i != id) {
                 receive(id, buff_determinant, 1, i);
-                determinant += *(buff_determinant);
+                determinant *= *(buff_determinant);
             }
         }
     } else {
