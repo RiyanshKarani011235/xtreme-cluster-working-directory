@@ -92,6 +92,7 @@ void multiplyMatrices(MPI_Comm Cart, double * X, double * Y, int n) {
                 if(destinationId != SOURCE_NODE) {
                     // send data to this destination id
                     for(int k=0; k<blockSize; k++) {
+                        printf("i, j, k = %d, %d, %d\n", i, j, k);
                         send(rank, X + (n * (i+k)) + j, blockSize, destinationId);
                     }
                     for(int k=0; k<blockSize; k++) {
