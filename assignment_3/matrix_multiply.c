@@ -99,14 +99,14 @@ void multiplyMatrices(MPI_Comm Cart, double * X, double * Y, int n) {
                     for(int k=0; k<blockSize; k++) {
                         send(rank, Y + (n * (i+k)) + j, blockSize, destinationId);
                     }
-                } else {
-                    // copy data to A and B
-                    for(int k=0; k<blockSize; k++) {
-                        memcpy(A + (k*blockSize), X + (n * (i+k)) + j, sizeof(double) * blockSize);
-                    }
-                    for(int k=0; k<blockSize; k++) {
-                        memcpy(B + (k*blockSize), Y + (n * (i+k)) + j, sizeof(double) * blockSize);
-                    }
+                // } else {
+                //     // copy data to A and B
+                //     for(int k=0; k<blockSize; k++) {
+                //         memcpy(A + (k*blockSize), X + (n * (i+k)) + j, sizeof(double) * blockSize);
+                //     }
+                //     for(int k=0; k<blockSize; k++) {
+                //         memcpy(B + (k*blockSize), Y + (n * (i+k)) + j, sizeof(double) * blockSize);
+                //     }
                 }
             } else if(i == coordinates[0]  && j == coordinates[1]) {
                 // receive data for A and B from source
