@@ -13,8 +13,8 @@ void matrixMultiplyKTimes();
 void multiplyMatrices(MPI_Comm, int[], int, double *, double *, int) ;
 void matrixMultiply();
 int randInt();
-void send(int, double *, int, int);
-void receive(int, double *, int, int);
+void send(MPI_Comm, int, double *, int, int);
+void receive(MPI_Comm, int, double *, int, int);
 void printMatrix(double *, int);
 void printArray(double *, int);
 void logOutput(char *);
@@ -90,10 +90,10 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
                     for(int k=0; k<blockSize; k++) {
                         printf("i, j, k = %d, %d, %d\n", i, j, k);
                         // send(rank, X + (n * (i+k)) + j, blockSize, destinationId);
-                        send(rank, X, blockSize, destinationId);
+                        send(Cart, rank, X, blockSize, destinationId);
                     }
                     for(int k=0; k<blockSize; k++) {
-                        send(rank, Y + (n * (i+k)) + j, blockSize, destinationId);
+                        send(Cart, rank, Y + (n * (i+k)) + j, blockSize, destinationId);
                     }
                 } else {
                     // copy data to A and B
@@ -109,10 +109,10 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
                 for(int k=0; k<blockSize; k++) {
                     printf("&&&&&&&&&&&7777 i, j, k = %d, %d, %d\n", i, j, k); 
                     // receive(rank, A+(k*blockSize), blockSize, SOURCE_NODE);
-                    receive(rank, A, blockSize, SOURCE_NODE);
+                    receive(Cart, rank, A, blockSize, SOURCE_NODE);
                 }
                 for(int k=0; k<blockSize; k++) {
-                    receive(rank, B+(k*blockSize), blockSize, SOURCE_NODE);
+                    receive(Cart, rank, B+(k*blockSize), blockSize, SOURCE_NODE);
                 }
                 memcpy(B, A, sizeof(A));
             }
@@ -180,8 +180,8 @@ MPI_Send(
     int tag,
 	MPI_Comm communicator)
 */
-void send(int id, double *ptr, int size, int destination_process_number) {
-	MPI_Send(ptr, size, MPI_DOUBLE, destination_process_number, 1, MPI_COMM_WORLD);
+void send(MPI_Comm comm, int id, double *ptr, int size, int destination_process_number) {
+	MPI_Send(ptr, size, MPI_DOUBLE, destination_process_number, 1, comm);
 	char s[64];
 	snprintf(s, sizeof(s), "process %d sent %d integers to process: %d\n", id, size, destination_process_number);
 	logOutput(s);
@@ -197,8 +197,8 @@ MPI_Recv(
     MPI_Comm communicator,
     MPI_Status* status)
  */
-void receive(int id, double *ptr, int size, int source_process_number) {
-	MPI_Recv(ptr, size, MPI_DOUBLE, source_process_number, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+void receive(MPI_Comm comm, int id, double *ptr, int size, int source_process_number) {
+	MPI_Recv(ptr, size, MPI_DOUBLE, source_process_number, 1, comm, MPI_STATUS_IGNORE);
 	char s[64];
 	snprintf(s, sizeof(s), "process %d received %d integers from process: %d\n", id, size, source_process_number);
 	logOutput(s);
