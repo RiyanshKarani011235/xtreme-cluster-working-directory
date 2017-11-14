@@ -84,8 +84,6 @@ void multiplyMatrices(MPI_Comm Cart, double * X, double * Y, int n) {
     // SEND BLOCK DATA TO CORRESPONDING MESSAGES
     for(int i=0; i<sqrtp; i++) {
         for(int j=0; j<sqrtp; j++) {
-            printf("(%d, %d)\n", i, j);
-            printf("(-%d, -%d\n", coordinates[i], coordinates[j]);
             // send part of X to processor (i, j)
             if(rank == SOURCE_NODE) {
                 int destinationId;
@@ -122,11 +120,12 @@ void multiplyMatrices(MPI_Comm Cart, double * X, double * Y, int n) {
     }
 
     printf("process %d has the following data \n", rank);
-    // printMatrix(A, blockSize);
-    // printMatrix(B, blockSize);
+    printMatrix(A, blockSize);
+    printMatrix(B, blockSize);
 
     free(A);
     free(B);
+    free(C);
 }
 
 void simpleMultiplyMatrices(double * A, double * B, double * C, int n) {
