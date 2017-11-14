@@ -65,7 +65,7 @@ void matrixMultiplyKTimes() {
         fillMatrixInputMethod2(X, N);
     }
 
-    // multiplyMatrices(Cart, coordinates, rank, X, X, N);
+    multiplyMatrices(Cart, coordinates, rank, X, X, N);
     free(X);
 }
 
@@ -156,8 +156,6 @@ void fillMatrixInputMethod2(double * ptr, int n) {
         memcpy(row+i, input, sizeof(input));
     }
 
-    // printArray(row, n);
-
     // copy the first row to every other ith row
     // after circular right shifting it by i positions
     for(int i=0; i<n; i++) {
@@ -224,7 +222,7 @@ void printMatrix(double *ptr, int n) {
         //     char s[512];
         //     snprintf(s, sizeof(s), "%lf ", *(ptr + (n*i) + j));
         //     logOutput(s);
-        // }
+        // 
         printArray(ptr + (i*n), n);
         logOutput("\n");
     }
