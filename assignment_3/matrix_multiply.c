@@ -77,50 +77,50 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
     double * C = malloc(sizeof(double) * pow(blockSize, 2));
 
     // SEND BLOCK DATA TO CORRESPONDING MESSAGES
-    // for(int i=0; i<sqrtp; i++) {
-    //     for(int j=0; j<sqrtp; j++) {
-    //         // send part of X to processor (i, j)
-    //         if(rank == SOURCE_NODE) {
-    //             int destinationId;
-    //             MPI_Cart_rank(Cart, (int[2]){i, j}, &destinationId);
+    for(int i=0; i<sqrtp; i++) {
+        for(int j=0; j<sqrtp; j++) {
+            // send part of X to processor (i, j)
+            if(rank == SOURCE_NODE) {
+                int destinationId;
+                MPI_Cart_rank(Cart, (int[2]){i, j}, &destinationId);
 
-    //             printf("destination id : %d\n", destinationId);
+                printf("destination id : %d\n", destinationId);
 
-    //             if(destinationId != SOURCE_NODE) {
-    //                 printf("i, j = %d, %d\n", i, j);
-    //                 // send data to this destination id
-    //                 printf("before the loop starts, blocksize = %d", blockSize);
-    //                 for(int k=0; k<blockSize; k++) {
-    //                     printf("i, j, k = %d, %d, %d\n", i, j, k);
-    //                     // send(rank, X + (n * (i+k)) + j, blockSize, destinationId);
-    //                     // send(Cart, rank, X, blockSize, destinationId);
-    //                 }
-    //                 for(int k=0; k<blockSize; k++) {
-    //                     // send(Cart, rank, Y + (n * (i+k)) + j, blockSize, destinationId);
-    //                 }
-    //             } else {
-    //                 // copy data to A and B
-    //                 for(int k=0; k<blockSize; k++) {
-    //                     memcpy(A + (k*blockSize), X + (n * (i+k)) + j, sizeof(double) * blockSize);
-    //                 }
-    //                 for(int k=0; k<blockSize; k++) {
-    //                     memcpy(B + (k*blockSize), Y + (n * (i+k)) + j, sizeof(double) * blockSize);
-    //                 }
-    //             }
-    //         } else if(i == coordinates[0]  && j == coordinates[1]) {
-    //             // receive data for A and B from source
-    //             for(int k=0; k<blockSize; k++) {
-    //                 printf("&&&&&&&&&&&7777 i, j, k = %d, %d, %d\n", i, j, k); 
-    //                 // receive(rank, A+(k*blockSize), blockSize, SOURCE_NODE);
-    //                 // receive(Cart, rank, A, blockSize, SOURCE_NODE);
-    //             }
-    //             for(int k=0; k<blockSize; k++) {
-    //                 // receive(Cart, rank, B+(k*blockSize), blockSize, SOURCE_NODE);
-    //             }
-    //             memcpy(B, A, sizeof(A));
-    //         }
-    //     }
-    // }
+                if(destinationId != SOURCE_NODE) {
+                    printf("i, j = %d, %d\n", i, j);
+                    // send data to this destination id
+                    printf("before the loop starts, blocksize = %d", blockSize);
+                    for(int k=0; k<blockSize; k++) {
+                        printf("i, j, k = %d, %d, %d\n", i, j, k);
+                        // send(rank, X + (n * (i+k)) + j, blockSize, destinationId);
+                        // send(Cart, rank, X, blockSize, destinationId);
+                    }
+                    for(int k=0; k<blockSize; k++) {
+                        // send(Cart, rank, Y + (n * (i+k)) + j, blockSize, destinationId);
+                    }
+                } else {
+                    // copy data to A and B
+                    for(int k=0; k<blockSize; k++) {
+                        memcpy(A + (k*blockSize), X + (n * (i+k)) + j, sizeof(double) * blockSize);
+                    }
+                    for(int k=0; k<blockSize; k++) {
+                        memcpy(B + (k*blockSize), Y + (n * (i+k)) + j, sizeof(double) * blockSize);
+                    }
+                }
+            } else if(i == coordinates[0]  && j == coordinates[1]) {
+                // receive data for A and B from source
+                for(int k=0; k<blockSize; k++) {
+                    printf("&&&&&&&&&&&7777 i, j, k = %d, %d, %d\n", i, j, k); 
+                    // receive(rank, A+(k*blockSize), blockSize, SOURCE_NODE);
+                    // receive(Cart, rank, A, blockSize, SOURCE_NODE);
+                }
+                for(int k=0; k<blockSize; k++) {
+                    // receive(Cart, rank, B+(k*blockSize), blockSize, SOURCE_NODE);
+                }
+                memcpy(B, A, sizeof(A));
+            }
+        }
+    }
 
     printf("process %d has the following data \n", rank);
     printMatrix(A, blockSize);
