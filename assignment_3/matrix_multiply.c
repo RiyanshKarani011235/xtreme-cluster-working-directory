@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
     gethostname(hostname, 255);								// non-MPI function to get the host name
     printf("Hello world! I am process number: %d from processor %s on host %s out of %d processors\n", rank, processor_name, hostname, world_size);
 
-    matrixMultiplyKTimes();
+    // matrixMultiplyKTimes();
 
     MPI_Finalize();
 
