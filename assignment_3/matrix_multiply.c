@@ -63,13 +63,14 @@ void matrixMultiplyKTimes() {
 
     double * A = malloc(sizeof(double) * pow(N / sqrt(p), 2));
     double * B = malloc(sizeof(double) * pow(N / sqrt(p), 2));
-    double * X;
 
     if(rank == SOURCE_NODE) {
         // generate the source matrix
+        double * X;
         X = malloc(sizeof(double) * N * N);
         fillMatrixInputMethod2(X, N);
         printMatrix(X, N);
+        free(X);
     } else {
 
     }
