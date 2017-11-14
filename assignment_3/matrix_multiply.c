@@ -158,7 +158,7 @@ void printMatrix(double *ptr, int n) {
     logOutput(s);
     for(int i=0; i<n; i++) {
         for(int j=0; j<n; j++) {
-            char s[128];
+            char s[512];
             snprintf(s, sizeof(s), "%lf ", *(ptr + (n*i) + j));
             logOutput(s);
         }
