@@ -65,7 +65,7 @@ void matrixMultiplyKTimes() {
         fillMatrixInputMethod2(X, N);
     }
 
-    multiplyMatrices(Cart, coordinates, rank, X, X, N);
+    // multiplyMatrices(Cart, coordinates, rank, X, X, N);
     free(X);
 }
 
