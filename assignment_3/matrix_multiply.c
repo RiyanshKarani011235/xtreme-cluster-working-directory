@@ -56,23 +56,23 @@ void matrixMultiplyKTimes() {
 
     char s[128];
     snprintf(s, sizeof(s), "process : %d has coordinates (%d, %d)\n", rank, coordinates[0], coordinates[1]);
-    logOutput(s);
+    logOutput(s);   
     int id;
 
     // MPI_Cart_rank(Cart, (int[2]){0, 1}, &id);
 
-    double * A = malloc(sizeof(double) * pow(N / sqrt(p), 2));
-    double * B = malloc(sizeof(double) * pow(N / sqrt(p), 2));
-    double * X;
+    // double * A = malloc(sizeof(double) * pow(N / sqrt(p), 2));
+    // double * B = malloc(sizeof(double) * pow(N / sqrt(p), 2));
+    // double * X;
 
-    if(rank == SOURCE_NODE) {
-        // generate the source matrix
-        X = malloc(sizeof(double) * N * N);
-        fillMatrixInputMethod2(X, N);
-        printMatrix(X, N);
-    } else {
+    // if(rank == SOURCE_NODE) {
+    //     // generate the source matrix
+    //     X = malloc(sizeof(double) * N * N);
+    //     fillMatrixInputMethod2(X, N);
+    //     printMatrix(X, N);
+    // } else {
 
-    }
+    // }
 
 }
 
