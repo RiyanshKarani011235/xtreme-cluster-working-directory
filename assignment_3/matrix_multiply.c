@@ -75,8 +75,14 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
     double * A = malloc(sizeof(double) * pow(blockSize, 2));
     double * B = malloc(sizeof(double) * pow(blockSize, 2));
     double * C = malloc(sizeof(double) * pow(blockSize, 2));
+    double * CTemp = malloc(sizeof(double) * pow(blockSize, 2));
 
-    // SEND BLOCK DATA TO CORRESPONDING MESSAGES
+    // INITIALIZE C TO ALL ZEROS
+    for(int i=0; i<blockSize; i++) {
+        *(C + i) = 0;
+    }
+
+    // SEND BLOCK DATA TO CORRESPONDING PROCESSES
     for(int i=0; i<sqrtp; i++) {
         for(int j=0; j<sqrtp; j++) {
             // send part of X to processor (i, j)
@@ -118,9 +124,16 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
     printMatrix(A, blockSize);
     printMatrix(B, blockSize);
 
+    // MULTIPLICATION ITERATIONS
     double * tempArray = malloc(sizeof(double) * blockSize * blockSize);
     for(int i=0; i<sqrtp; i++) {
-        // simpleMultiplyMatrices(A, B, C, blockSize);
+
+        // SIMPLY MULTIPLY A AND B IN EACH BLOCK AND ADD
+        // THE RESULTS TO C
+        simpleMultiplyMatrices(A, B, CTemp, blockSize);
+        for(int i=0; i<blockSize*blockSize; i++) {
+            *(C + i) += *(CTemp + 1);
+        }
 
         int limit = sqrtp - i - 1;
 
