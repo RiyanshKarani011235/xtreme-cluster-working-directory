@@ -62,7 +62,7 @@ void matrixMultiplyKTimes() {
     double * X = malloc(sizeof(double) * N * N);
     if(rank == SOURCE_NODE) {
         // generate the source matrix X
-        fillMatrixInputMethod2(X, N);
+        // fillMatrixInputMethod2(X, N);
     }
 
     // multiplyMatrices(Cart, coordinates, rank, X, X, N);
