@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
     gethostname(hostname, 255);								// non-MPI function to get the host name
     printf("Hello world! I am process number: %d from processor %s on host %s out of %d processors\n", rank, processor_name, hostname, world_size);
 
-    // matrixMultiplyKTimes();
+    matrixMultiplyKTimes();
 
     MPI_Finalize();
 
@@ -59,20 +59,20 @@ void matrixMultiplyKTimes() {
     logOutput(s);   
     int id;
 
-    // MPI_Cart_rank(Cart, (int[2]){0, 1}, &id);
+    MPI_Cart_rank(Cart, (int[2]){0, 1}, &id);
 
-    // double * A = malloc(sizeof(double) * pow(N / sqrt(p), 2));
-    // double * B = malloc(sizeof(double) * pow(N / sqrt(p), 2));
-    // double * X;
+    double * A = malloc(sizeof(double) * pow(N / sqrt(p), 2));
+    double * B = malloc(sizeof(double) * pow(N / sqrt(p), 2));
+    double * X;
 
-    // if(rank == SOURCE_NODE) {
-    //     // generate the source matrix
-    //     X = malloc(sizeof(double) * N * N);
-    //     fillMatrixInputMethod2(X, N);
-    //     printMatrix(X, N);
-    // } else {
+    if(rank == SOURCE_NODE) {
+        // generate the source matrix
+        X = malloc(sizeof(double) * N * N);
+        fillMatrixInputMethod2(X, N);
+        printMatrix(X, N);
+    } else {
 
-    // }
+    }
 
 }
 
