@@ -1,89 +1,90 @@
+process : 2 has coordinates (1, 0)
+process : 3 has coordinates (1, 1)
 process : 0 has coordinates (0, 0)
 process 0 sent 4 integers to process: 1
+process 1 received 4 integers from process: 0
 process 0 sent 4 integers to process: 1
+process 1 received 4 integers from process: 0
 process 0 sent 4 integers to process: 1
+process 1 received 4 integers from process: 0
 process 0 sent 4 integers to process: 1
+process 1 received 4 integers from process: 0
 process 0 sent 4 integers to process: 1
+process 1 received 4 integers from process: 0
 process 0 sent 4 integers to process: 1
+process 1 received 4 integers from process: 0
 process 0 sent 4 integers to process: 1
+process 1 received 4 integers from process: 0
 process 0 sent 4 integers to process: 1
+process 1 received 4 integers from process: 0
 process 0 sent 4 integers to process: 2
+process 2 received 4 integers from process: 0
 process 0 sent 4 integers to process: 2
+printing a matrix of size 4 x 4
 process 0 sent 4 integers to process: 2
+process 2 received 4 integers from process: 0
+
+rocess 0 sent 4 integers to process: 2
+process 2 received 4 integers from process: 0
 process 0 sent 4 integers to process: 2
+
 process 0 sent 4 integers to process: 2
+
 process 0 sent 4 integers to process: 2
-process 0 sent 4 integers to process: 2
-process 0 sent 4 integers to process: 2
+process 2 received 4 integers from process: 0
+
+rocess 0 sent 4 integers to process: 2
+process 2 received 4 integers from process: 0
 process 0 sent 4 integers to process: 3
+printing a matrix of size 4 x 4
+process 2 received 4 integers from process: 0
 process 0 sent 4 integers to process: 3
+
+process 2 received 4 integers from process: 0
 process 0 sent 4 integers to process: 3
+
+process 2 received 4 integers from process: 0
 process 0 sent 4 integers to process: 3
+
+printing a matrix of size 4 x 4
 process 0 sent 4 integers to process: 3
+
+
 process 0 sent 4 integers to process: 3
+
 process 0 sent 4 integers to process: 3
+
 process 0 sent 4 integers to process: 3
+
+printing a matrix of size 4 x 4
+printing a matrix of size 4 x 4
+
+
+
+
+
+
+
+
+printing a matrix of size 4 x 4
+om process: 0
+process 3 received 4 integers from process: 0
+
+process 3 received 4 integers from process: 0
+
+process 3 received 4 integers from process: 0
+
+process 3 received 4 integers from process: 0
+
+process 3 received 4 integers from process: 0
+process 3 received 4 integers from process: 0
+process 3 received 4 integers from process: 0
 printing a matrix of size 4 x 4
 
 
 
 
 printing a matrix of size 4 x 4
-
-
-
-
-process : 3 has coordinates (1, 1)
-process : 1 has coordinates (0, 1)
-process : 2 has coordinates (1, 0)
-process 3 received 4 integers from process: 0
-process 1 received 4 integers from process: 0
-process 2 received 4 integers from process: 0
-process 1 received 4 integers from process: 0
-process 2 received 4 integers from process: 0
-process 1 received 4 integers from process: 0
-process 3 received 4 integers from process: 0
-process 2 received 4 integers from process: 0
-process 1 received 4 integers from process: 0
-process 3 received 4 integers from process: 0
-process 3 received 4 integers from process: 0
-process 3 received 4 integers from process: 0
-process 3 received 4 integers from process: 0
-process 2 received 4 integers from process: 0
-process 1 received 4 integers from process: 0
-process 3 received 4 integers from process: 0
-process 2 received 4 integers from process: 0
-process 1 received 4 integers from process: 0
-process 2 received 4 integers from process: 0
-process 1 received 4 integers from process: 0
-printing a matrix of size 4 x 4
-process 2 received 4 integers from process: 0
-
-
-printing a matrix of size 4 x 4
-
-process 2 received 4 integers from process: 0
-
-
-printing a matrix of size 4 x 4
-
-
-
-printing a matrix of size 4 x 4
-
-
-
-printing a matrix of size 4 x 4
-
-
-
-
-rinting a matrix of size 4 x 4
-
-
-
-
-
 
 
 
