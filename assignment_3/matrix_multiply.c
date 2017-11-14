@@ -59,7 +59,7 @@ void matrixMultiplyKTimes() {
     snprintf(s, sizeof(s), "process : %d has coordinates (%d, %d)\n", rank, coordinates[0], coordinates[1]);
     logOutput(s);   
 
-    int * X = malloc(sizeof(double) * N * N);
+    double * X = malloc(sizeof(double) * N * N);
     if(rank == SOURCE_NODE) {
         // generate the source matrix X
         fillMatrixInputMethod2(X, N);
