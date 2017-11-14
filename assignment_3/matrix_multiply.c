@@ -10,7 +10,7 @@
 void fillMatrixINputMethod1(int *, int, int);
 void fillMatrixInputMethod2(double * , int);
 void matrixMultiplyKTimes();
-void multiplyMatrices(MPI_Comm, double *, double *, int) ;
+void multiplyMatrices(MPI_Comm, int[], int, double *, double *, int) ;
 void matrixMultiply();
 int randInt();
 void send(int, double *, int, int);
@@ -65,16 +65,11 @@ void matrixMultiplyKTimes() {
         fillMatrixInputMethod2(X, N);
     }
 
-    multiplyMatrices(Cart, X, X, N);
+    multiplyMatrices(Cart, coordinates, rank, X, X, N);
     free(X);
 }
 
-void multiplyMatrices(MPI_Comm Cart, double * X, double * Y, int n) {
-    int coordinates[2];
-    int rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Cart_coords(Cart, rank, 2, coordinates);
-
+void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, double * Y, int n) {
     int sqrtp = sqrt(p);
     int blockSize = n / sqrtp;
     double * A = malloc(sizeof(double) * pow(blockSize, 2));
@@ -99,14 +94,14 @@ void multiplyMatrices(MPI_Comm Cart, double * X, double * Y, int n) {
                     for(int k=0; k<blockSize; k++) {
                         send(rank, Y + (n * (i+k)) + j, blockSize, destinationId);
                     }
-                // } else {
-                //     // copy data to A and B
-                //     for(int k=0; k<blockSize; k++) {
-                //         memcpy(A + (k*blockSize), X + (n * (i+k)) + j, sizeof(double) * blockSize);
-                //     }
-                //     for(int k=0; k<blockSize; k++) {
-                //         memcpy(B + (k*blockSize), Y + (n * (i+k)) + j, sizeof(double) * blockSize);
-                //     }
+                } else {
+                    // copy data to A and B
+                    for(int k=0; k<blockSize; k++) {
+                        memcpy(A + (k*blockSize), X + (n * (i+k)) + j, sizeof(double) * blockSize);
+                    }
+                    for(int k=0; k<blockSize; k++) {
+                        memcpy(B + (k*blockSize), Y + (n * (i+k)) + j, sizeof(double) * blockSize);
+                    }
                 }
             } else if(i == coordinates[0]  && j == coordinates[1]) {
                 // receive data for A and B from source
