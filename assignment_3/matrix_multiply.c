@@ -7,6 +7,9 @@
 #define N                               8
 #define p                               4
 
+void fillMatrixINputMethod1(int *, int, int);
+void fillMatrixInputMethod2(double * , int);
+void matrixMultiplyKTimes();
 void matrixMultiply();
 int randInt();
 void send(int, int *, int, int);
@@ -38,6 +41,45 @@ int main(int argc, char **argv) {
     return 0;
 }
 
+void matrixMultiplyKTimes() {
+
+
+    int dim[2] = {sqrt(p), sqrt(p)};
+    int period[2] = {0, 0};
+    int reorder = 1;
+    int coordinates[2];
+    int rank;
+    MPI_Comm Cart;
+    MPI_Cart_create(MPI_COMM_WORLD, 2, dim, period, reorder, &Cart);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Cart_coords(Cart, rank, 2, coordinates);
+
+    printf("process : %d has coordinates (%d, %d)\n", rank, coordinates[0], coordinates[1]);
+    int id;
+
+    // MPI_Cart_rank(Cart, (int[2]){0, 1}, &id);
+
+    double * A = malloc(sizeof(double) * pow(N / sqrt(p), 2));
+    double * B = malloc(sizeof(double) * pow(N / sqrt(p), 2));
+    double * X;
+
+    if(rank == SOURCE_NODE) {
+        // generate the source matrix
+        X = malloc(sizeof(double) * N * N);
+        fillMatrixInputMethod2(X, N);
+        printMatrix(X, N);
+
+        
+    } else {
+
+    }
+
+}
+
+void multiplyMatrices(double * X, double * Y, int n) {
+    
+}
+
 void fillMatrixINputMethod1(int *ptr, int length, int width) {
 
 }
@@ -58,36 +100,6 @@ void fillMatrixInputMethod2(double * ptr, int n) {
         memcpy(ptr + (i*n) + i, row, sizeof(double)*n - i);
         memcpy(ptr + (i*n), row + n - i, sizeof(double)*i);
     }
-}
-
-void matrixMultiplyKTimes() {
-
-    // int dim[2] = {(int) (N / sqrt(p)), (int) (N / sqrt(p))};
-    // int period = {0, 0};
-    // MPI_Comm Cart;
-    // MPI_Cart_create(MPI_COMM_WORLD, 2, dim, period, 1, &Cart);
-
-    int id;
-    MPI_Comm_rank(MPI_COMM_WORLD, &id);			// get process rank number
-
-    // double * A = malloc(sizeof(double) * pow(, 2));
-    // double * B = malloc(sizeof(double) * pow(N / sqrt(p), 2));
-    double * X;
-
-    if(id == SOURCE_NODE) {
-        // generate the source matrix
-        X = malloc(sizeof(double) * N * N);
-        fillMatrixInputMethod2(X, N);
-        printMatrix(X, N);
-
-        
-    } else {
-    }
-
-}
-
-void multiplyMatrices(double * X, double * Y, int n) {
-    
 }
 
 
