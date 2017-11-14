@@ -93,10 +93,10 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
                     for(int k=0; k<blockSize; k++) {
                         printf("i, j, k = %d, %d, %d\n", i, j, k);
                         // send(rank, X + (n * (i+k)) + j, blockSize, destinationId);
-                        send(Cart, rank, X, blockSize, destinationId);
+                        // send(Cart, rank, X, blockSize, destinationId);
                     }
                     for(int k=0; k<blockSize; k++) {
-                        send(Cart, rank, Y + (n * (i+k)) + j, blockSize, destinationId);
+                        // send(Cart, rank, Y + (n * (i+k)) + j, blockSize, destinationId);
                     }
                 } else {
                     // copy data to A and B
@@ -112,10 +112,10 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
                 for(int k=0; k<blockSize; k++) {
                     printf("&&&&&&&&&&&7777 i, j, k = %d, %d, %d\n", i, j, k); 
                     // receive(rank, A+(k*blockSize), blockSize, SOURCE_NODE);
-                    receive(Cart, rank, A, blockSize, SOURCE_NODE);
+                    // receive(Cart, rank, A, blockSize, SOURCE_NODE);
                 }
                 for(int k=0; k<blockSize; k++) {
-                    receive(Cart, rank, B+(k*blockSize), blockSize, SOURCE_NODE);
+                    // receive(Cart, rank, B+(k*blockSize), blockSize, SOURCE_NODE);
                 }
                 memcpy(B, A, sizeof(A));
             }
