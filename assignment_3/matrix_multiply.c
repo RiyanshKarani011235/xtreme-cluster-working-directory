@@ -84,14 +84,9 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
                 int destinationId;
                 MPI_Cart_rank(Cart, (int[2]){i, j}, &destinationId);
 
-                printf("destination id : %d\n", destinationId);
-
                 if(destinationId != SOURCE_NODE) {
-                    printf("i, j = %d, %d\n", i, j);
                     // send data to this destination id
-                    printf("before the loop starts, blocksize = %d", blockSize);
                     for(int k=0; k<blockSize; k++) {
-                        printf("i, j, k = %d, %d, %d\n", i, j, k);
                         send(Cart, rank, X + (n * (i+k)) + j, blockSize, destinationId);
                     }
                     for(int k=0; k<blockSize; k++) {
@@ -109,7 +104,6 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
             } else if(i == coordinates[0]  && j == coordinates[1]) {
                 // receive data for A and B from source
                 for(int k=0; k<blockSize; k++) {
-                    printf("&&&&&&&&&&&7777 i, j, k = %d, %d, %d\n", i, j, k); 
                     receive(Cart, rank, A+(k*blockSize), blockSize, SOURCE_NODE);
                 }
                 for(int k=0; k<blockSize; k++) {
