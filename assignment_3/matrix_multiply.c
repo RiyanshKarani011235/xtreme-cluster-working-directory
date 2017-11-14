@@ -57,7 +57,7 @@ void matrixMultiplyKTimes() {
 
     char s[128];
     snprintf(s, sizeof(s), "process : %d has coordinates (%d, %d)\n", rank, coordinates[0], coordinates[1]);
-    logOutput(s);   
+    logOutput(s);
 
     double * X = malloc(sizeof(double) * N * N);
     if(rank == SOURCE_NODE) {
