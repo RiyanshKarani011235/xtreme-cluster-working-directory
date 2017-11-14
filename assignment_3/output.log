@@ -1,3 +1,7 @@
+process : 3 has coordinates (1, 1)
+process : 2 has coordinates (1, 0)
+process : 1 has coordinates (0, 1)
+process : 0 has coordinates (0, 0)
 printing a matrix of size 8 x 8
 -1.000000 0.000000 1.000000 0.000000 -1.000000 0.000000 1.000000 0.000000 
 0.000000 -1.000000 0.000000 1.000000 0.000000 -1.000000 0.000000 1.000000 

@@ -54,7 +54,9 @@ void matrixMultiplyKTimes() {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Cart_coords(Cart, rank, 2, coordinates);
 
-    printf("process : %d has coordinates (%d, %d)\n", rank, coordinates[0], coordinates[1]);
+    char s[128];
+    snprintf(s, sizeof(s), "process : %d has coordinates (%d, %d)\n", rank, coordinates[0], coordinates[1]);
+    logOutput(s);
     int id;
 
     // MPI_Cart_rank(Cart, (int[2]){0, 1}, &id);
@@ -68,8 +70,6 @@ void matrixMultiplyKTimes() {
         X = malloc(sizeof(double) * N * N);
         fillMatrixInputMethod2(X, N);
         printMatrix(X, N);
-
-        
     } else {
 
     }
