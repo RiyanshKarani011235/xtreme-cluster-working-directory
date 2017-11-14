@@ -118,6 +118,71 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
     printMatrix(A, blockSize);
     printMatrix(B, blockSize);
 
+    double * tempArray = malloc(sizeof(double) * blockSize * blockSize);
+    for(int i=0; i<sqrtp; i++) {
+        // simpleMultiplyMatrices(A, B, C, blockSize);
+
+        int limit = sqrtp - i - 1;
+
+        // decide whether to left shift a row
+        if(coordinates[0] >= limit) {
+            // left shift A by 1 
+            printf("process %d left shifting by 1\n", rank);
+            int left, right;
+            MPI_Cart_shift(Cart, 1, 1, &left, &right);
+            printf("for process %d, right is %d, left is %d\n", rank, left, right);
+            
+            if(coordinates[1] == sqrtp - 1) {
+                // last process at the right
+                for(int j=0; j<blockSize; j++) {
+                    send(Cart, rank, A + (j*blockSize), blockSize, left);
+                }
+                for(int j=0; j<blockSize; j++) {
+                    receive(Cart, rank, A + (j*blockSize), blockSize, right);
+                }
+            } else {
+                // not the last process at the right
+                for(int j=0; j<blockSize; j++) {
+                    receive(Cart, rank, tempArray + (j*blockSize), blockSize, right);
+                }
+                for(int j=0; j<blockSize; j++) {
+                    send(Cart, rank, A + (j*blockSize), blockSize, left);
+                }
+                memcpy(A, tempArray, sizeof(double) * sizeof(A));
+            }
+        }
+
+        // decide whether to up shift a column
+        if(coordinates[1] >= limit) {
+            // up shift B by 1
+            printf("process %d up shifting by 1\n", rank);
+            int up, down;
+            MPI_Cart_shift(Cart, 0, 1, &up, &down);
+            printf("for process %d, up is %d, down in %d\n", rank, up, down);
+
+            if(coordinates[0] == sqrtp - 1) {
+                // last process at the bottom
+                for(int j=0; j<blockSize; j++) {
+                    send(Cart, rank, A + (j*blockSize), blockSize, up);
+                }
+                for(int j=0; j<blockSize; j++) {
+                    receive(Cart, rank, A + (j*blockSize), blockSize, down);
+                }
+            } else {
+                // not the last process at the bottom
+                for(int j=0; j<blockSize; j++) {
+                    receive(Cart, rank, tempArray + (j*blockSize), blockSize, down);
+                }
+                for(int j=0; j<blockSize; j++) {
+                    send(Cart, rank, A + (j*blockSize), blockSize, up);
+                }
+                memcpy(A, tempArray, sizeof(double) * sizeof(A));
+            }
+        }
+
+    }
+    
+    free(tempArray);
     free(A);
     free(B);
     free(C);
