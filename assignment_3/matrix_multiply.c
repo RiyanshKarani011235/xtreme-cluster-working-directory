@@ -96,6 +96,8 @@ void fillMatrixInputMethod2(double * ptr, int n) {
         memcpy(row+i, input, sizeof(input));
     }
 
+    printArray(row, n);
+
     // copy the first row to every other ith row
     // after circular right shifting it by i positions
     for(int i=0; i<n; i++) {
