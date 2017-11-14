@@ -84,6 +84,8 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
                 int destinationId;
                 MPI_Cart_rank(Cart, (int[2]){i, j}, &destinationId);
 
+                printf("destination id : %d\n", destinationId);
+
                 if(destinationId != SOURCE_NODE) {
                     printf("i, j = %d, %d\n", i, j);
                     // send data to this destination id
