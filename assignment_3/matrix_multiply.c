@@ -111,6 +111,7 @@ void multiplyMatrices(MPI_Comm Cart, double * X, double * Y, int n) {
             } else if(i == coordinates[0]  && j == coordinates[1]) {
                 // receive data for A and B from source
                 for(int k=0; k<blockSize; k++) {
+                    printf("&&&&&&&&&&&7777 i, j, k = %d, %d, %d\n", i, j, k); 
                     receive(rank, A+(k*blockSize), blockSize, SOURCE_NODE);
                 }
                 for(int k=0; k<blockSize; k++) {
