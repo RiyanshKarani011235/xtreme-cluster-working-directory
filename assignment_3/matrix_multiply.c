@@ -87,6 +87,7 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
                 if(destinationId != SOURCE_NODE) {
                     printf("i, j = %d, %d\n", i, j);
                     // send data to this destination id
+                    printf("before the loop starts, blocksize = %d", blocksize);
                     for(int k=0; k<blockSize; k++) {
                         printf("i, j, k = %d, %d, %d\n", i, j, k);
                         // send(rank, X + (n * (i+k)) + j, blockSize, destinationId);
