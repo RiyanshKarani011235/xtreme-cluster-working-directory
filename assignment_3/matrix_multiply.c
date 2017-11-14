@@ -5,6 +5,7 @@
 
 #define SOURCE_NODE                     0
 #define N                               8
+#define p                               4
 
 void matrixMultiply();
 int randInt();
@@ -30,7 +31,9 @@ int main(int argc, char **argv) {
     gethostname(hostname, 255);								// non-MPI function to get the host name
     printf("Hello world! I am process number: %d from processor %s on host %s out of %d processors\n", rank, processor_name, hostname, world_size);
 
-    matrixMultiply();
+    matrixMultiplyKTimes();
+
+    MPI_Finalize();
 
     return 0;
 }
@@ -57,19 +60,34 @@ void fillMatrixInputMethod2(double * ptr, int n) {
     }
 }
 
-void matrixMultiply() {
+void matrixMultiplyKTimes() {
+
+    // int dim[2] = {(int) (N / sqrt(p)), (int) (N / sqrt(p))};
+    // int period = {0, 0};
+    // MPI_Comm Cart;
+    // MPI_Cart_create(MPI_COMM_WORLD, 2, dim, period, 1, &Cart);
+
     int id;
     MPI_Comm_rank(MPI_COMM_WORLD, &id);			// get process rank number
 
-    double * X = malloc(sizeof(double) * N * N);
-    double * Y = malloc(sizeof(double) * N * N);
-    fillMatrixInputMethod2(X, N);
-    memcpy(Y, X, sizeof(double) * N * N);
+    // double * A = malloc(sizeof(double) * pow(, 2));
+    // double * B = malloc(sizeof(double) * pow(N / sqrt(p), 2));
+    double * X;
 
-    printMatrix(Y, N);
+    if(id == SOURCE_NODE) {
+        // generate the source matrix
+        X = malloc(sizeof(double) * N * N);
+        fillMatrixInputMethod2(X, N);
+        printMatrix(X, N);
 
-    free(X);
-    free(Y);
+        
+    } else {
+    }
+
+}
+
+void multiplyMatrices(double * X, double * Y, int n) {
+    
 }
 
 
