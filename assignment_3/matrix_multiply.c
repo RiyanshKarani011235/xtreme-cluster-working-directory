@@ -69,8 +69,9 @@ void matrixMultiplyKTimes() {
         double * X;
         X = malloc(sizeof(double) * N * N);
         fillMatrixInputMethod2(X, N);
-        printMatrix(X, N);
-        // free(X);
+        // printMatrix(X, N);
+        printArray(X, N*N);
+        free(X);
     } else {
 
     }
