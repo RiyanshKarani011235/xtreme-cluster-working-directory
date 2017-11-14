@@ -70,7 +70,7 @@ void matrixMultiplyKTimes() {
         X = malloc(sizeof(double) * N * N);
         fillMatrixInputMethod2(X, N);
         // printMatrix(X, N);
-        printArray(X, N*N);
+        // printArray(X, N*N);
         free(X);
     } else {
 
@@ -96,7 +96,7 @@ void fillMatrixInputMethod2(double * ptr, int n) {
         memcpy(row+i, input, sizeof(input));
     }
 
-    printArray(row, n);
+    // printArray(row, n);
 
     // copy the first row to every other ith row
     // after circular right shifting it by i positions
