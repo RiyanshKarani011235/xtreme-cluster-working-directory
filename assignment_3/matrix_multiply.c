@@ -46,7 +46,7 @@ void matrixMultiplyKTimes() {
 
 
     int dim[2] = {sqrt(p), sqrt(p)};
-    int period[2] = {0, 0};
+    int period[2] = {1, 1};
     int reorder = 1;
     int coordinates[2];
     int rank;
@@ -66,7 +66,7 @@ void matrixMultiplyKTimes() {
     }
 
     multiplyMatrices(Cart, X, X, N);
-
+    free(X);
 }
 
 void multiplyMatrices(MPI_Comm Cart, double * X, double * Y, int n) {
@@ -79,6 +79,7 @@ void multiplyMatrices(MPI_Comm Cart, double * X, double * Y, int n) {
     int blockSize = n / sqrtp;
     double * A = malloc(sizeof(double) * pow(blockSize, 2));
     double * B = malloc(sizeof(double) * pow(blockSize, 2));
+    double * C = malloc(sizeof(double) * pow(blockSize, 2));
 
     // SEND BLOCK DATA TO CORRESPONDING MESSAGES
     for(int i=0; i<sqrtp; i++) {
@@ -121,10 +122,11 @@ void multiplyMatrices(MPI_Comm Cart, double * X, double * Y, int n) {
     }
 
     printf("process %d has the following data \n", rank);
-    printMatrix(A, blockSize);
-    printMatrix(B, blockSize);
+    // printMatrix(A, blockSize);
+    // printMatrix(B, blockSize);
 
-    free(X);
+    free(A);
+    free(B);
 }
 
 void simpleMultiplyMatrices(double * A, double * B, double * C, int n) {
