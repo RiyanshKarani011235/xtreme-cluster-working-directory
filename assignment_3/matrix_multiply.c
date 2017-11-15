@@ -210,9 +210,9 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
                     receive(Cart, rank, tempArray1, blockSize * blockSize, sourceId);
                 }
 
-                // for(int k=0; k<blockSize; k++) {
-                //     memcpy(Result + (n*((i*blockSize) + k) + (j*blockSize)), tempArray + (k*blockSize), sizeof(double) * blockSize * blockSize);
-                // }
+                for(int k=0; k<blockSize; k++) {
+                    memcpy(Result + (n*((i*blockSize) + k) + (j*blockSize)), tempArray1 + (k*blockSize), sizeof(double) * blockSize * blockSize);
+                }
             }
         }
     } else {
