@@ -311,20 +311,11 @@ void fillMatrixInputMethod2(double * ptr, int n) {
     int k = 0;
     for(int i=0; i<n; i++) {
         k += i;
-        printf("k = %d\n", k);
         int j = k % n;
         memcpy(ptr + (i*n) + j, row, sizeof(double)*(n - j));
         memcpy(ptr + (i*n), row + n - j, sizeof(double)*j);
     }
 }
-
-
-/*
- * Generates a random integer in the range [-max, +max]
- */
-// int randInt() {
-//     return (rand() % (MAX_ARRAY_ELEMENT+1));
-// }
 
 /*
 MPI_Send(
