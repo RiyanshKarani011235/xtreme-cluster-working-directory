@@ -196,29 +196,31 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
         }
     }
 
-    // if(rank == SOURCE_NODE) {
-    //     // collect the result from every process and 
-    //     // accumulate it into Y
-    //     for(int i=0; i<sqrtp; i++) {
-    //         for(int j=0; j<sqrtp; j++) {
-    //             int sourceId;
-    //             MPI_Cart_rank(Cart, (int[2]){i, j}, &sourceId);
-    //             if(sourceId == SOURCE_NODE) {
-    //                 memcpy(tempArray, C, sizeof(double) * blockSize * blockSize);
-    //             } else {
-    //                 receive(Cart, rank, tempArray, blockSize * blockSize, sourceId);
-    //             }
+    double * tempArray1 = malloc(sizeof(double) * blockSize * blockSize);
+    if(rank == SOURCE_NODE) {
+        // collect the result from every process and 
+        // accumulate it into Y
+        for(int i=0; i<sqrtp; i++) {
+            for(int j=0; j<sqrtp; j++) {
+                int sourceId;
+                MPI_Cart_rank(Cart, (int[2]){i, j}, &sourceId);
+                if(sourceId == SOURCE_NODE) {
+                    memcpy(tempArray1, C, sizeof(double) * blockSize * blockSize);
+                } else {
+                    receive(Cart, rank, tempArray1, blockSize * blockSize, sourceId);
+                }
 
-    //             for(int k=0; k<blockSize; k++) {
-    //                 memcpy(Result + (n*((i*blockSize) + k) + (j*blockSize)), tempArray + (k*blockSize), sizeof(double) * blockSize * blockSize);
-    //             }
-    //         }
-    //     }
-    // } else {
-    //     send(Cart, rank, C, blockSize * blockSize, SOURCE_NODE);
-    // }
+                // for(int k=0; k<blockSize; k++) {
+                //     memcpy(Result + (n*((i*blockSize) + k) + (j*blockSize)), tempArray + (k*blockSize), sizeof(double) * blockSize * blockSize);
+                // }
+            }
+        }
+    } else {
+        send(Cart, rank, C, blockSize * blockSize, SOURCE_NODE);
+    }
     
     free(tempArray);
+    free(tempArray1);
     free(A);
     free(B);
     free(C);
