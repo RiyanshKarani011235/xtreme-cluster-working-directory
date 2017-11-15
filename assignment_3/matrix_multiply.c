@@ -77,11 +77,11 @@ void matrixMultiplyKTimes() {
         memcpy(Y, Result, sizeof(double) * N * N);
     }
 
-    if(rank == SOURCE_NODE) {
-        // compute determinant at the source node
-        double determinant = determinantOfMatrix(Result, N, N);
-        printf("determinant = %lf", determinant);
-    }
+    // if(rank == SOURCE_NODE) {
+    //     // compute determinant at the source node
+    //     double determinant = determinantOfMatrix(Result, N, N);
+    //     printf("determinant = %lf", determinant);
+    // }
     
     free(X);
     free(Y);
