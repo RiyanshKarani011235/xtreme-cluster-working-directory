@@ -6,12 +6,15 @@
 #define SOURCE_NODE                     0
 #define N                               8
 #define p                               4
+#define K                               1
 
 void fillMatrixINputMethod1(int *, int, int);
 void fillMatrixInputMethod2(double * , int);
 void matrixMultiplyKTimes();
-void multiplyMatrices(MPI_Comm, int[], int, double *, double *, int) ;
+void multiplyMatrices(MPI_Comm, int[], int, double *, double *, double *, int) ;
 void simpleMultiplyMatrices(double *, double *, double *, int);
+double determinantOfMatrix(double *, int, int);
+void getCofactor(double *, double *, int, int, int);
 int randInt();
 void send(MPI_Comm, int, double *, int, int);
 void receive(MPI_Comm, int, double *, int, int);
@@ -43,8 +46,6 @@ int main(int argc, char **argv) {
 }
 
 void matrixMultiplyKTimes() {
-
-
     int dim[2] = {sqrt(p), sqrt(p)};
     int period[2] = {1, 1};
     int reorder = 1;
@@ -60,18 +61,34 @@ void matrixMultiplyKTimes() {
     logOutput(s);
 
     double * X = malloc(sizeof(double) * N * N);
+    double * Y = malloc(sizeof(double) * N * N);
+    double * Result = malloc(sizeof(double) * N * N);
     if(rank == SOURCE_NODE) {
         // generate the source matrix X
         fillMatrixInputMethod2(X, N);
+        memcpy(Y, X, sizeof(double) * N * N);
         printMatrix(X, N);
     }
 
-    wait_(rank);
-    multiplyMatrices(Cart, coordinates, rank, X, X, N);
+    // multiply K times
+    for(int i=0; i<K; i++) {
+        // multiply matrices using Canon's algorithm
+        multiplyMatrices(Cart, coordinates, rank, X, Y, Result, N);
+        memcpy(Y, Result, sizeof(double) * N * N);
+    }
+
+    if(rank == SOURCE_NODE) {
+        // compute determinant at the source node
+        double determinant = determinantOfMatrix(Result, N, N);
+        printf("determinant = %lf", determinant);
+    }
+    
     free(X);
+    free(Y);
+    free(Result);
 }
 
-void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, double * Y, int n) {
+void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, double * Y, double * Result, int n) {
     int sqrtp = sqrt(p);
     int blockSize = n / sqrtp;
     double * A = malloc(sizeof(double) * pow(blockSize, 2));
@@ -145,7 +162,6 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
             // printf("process %d left shifting by 1\n", rank);
             int left, right;
             MPI_Cart_shift(Cart, 1, 1, &left, &right);
-            printf("for process %d, right is %d, left is %d\n", rank, left, right);
             
             if(coordinates[1] == sqrtp - 1) {
                 // last process at the right, sends first
@@ -178,23 +194,29 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
                 memcpy(B, tempArray, sizeof(double) * sizeof(A));
             }
         }
-
-        wait_(rank);
-        printf("after %d iterations, process %d has the following data \n", i, rank);
-        printMatrix(A, blockSize);
-        printf("------------------------\n");
-        printMatrix(B, blockSize);
-        printf("------------------------\n");
-        printMatrix(CTemp, blockSize);
-        printf("------------------------\n");
-        printMatrix(C, blockSize);
-        printf("------------------------\n");
-
     }
 
-    wait(rank);
-    printf("&&&&&&&&&&&& matrix C for process %d\n", rank);
-    printMatrix(C, blockSize);
+    if(rank == SOURCE_NODE) {
+        // collect the result from every process and 
+        // accumulate it into Y
+        for(int i=0; i<sqrtp; i++) {
+            for(int j=0; j<sqrtp; j++) {
+                int sourceId;
+                MPI_Cart_rank(Cart, (int[2]){i, j}, &sourceId);
+                if(sourceId == SOURCE_NODE) {
+                    memcpy(tempArray, C, sizeof(double) * blockSize * blockSize);
+                } else {
+                    receive(Cart, rank, tempArray, blockSize * blockSize, sourceId);
+                }
+
+                for(int k=0; k<blockSize; k++) {
+                    memcpy(Result + (n*((i*blockSize) + k) + (j*blockSize)), tempArray + (k*blockSize), sizeof(double) * blockSize * blockSize);
+                }
+            }
+        }
+    } else {
+        send(Cart, rank, C, blockSize * blockSize, SOURCE_NODE);
+    }
     
     free(tempArray);
     free(A);
@@ -212,6 +234,60 @@ void simpleMultiplyMatrices(double * A, double * B, double * C, int n) {
             }
         }
     }
+}
+
+// Function to get cofactor of mat[p][q] in temp[][]. n is current
+// dimension of mat[][]
+void getCofactor(double * mat, double * temp, int r, int q, int n) {
+    int i = 0, j = 0;
+ 
+    // Looping for each element of the matrix
+    for (int row = 0; row < n; row++)
+    {
+        for (int col = 0; col < n; col++)
+        {
+            //  Copying into temporary matrix only those element
+            //  which are not in given row and column
+            if (row != r && col != q)
+            {
+                *(temp + (i*n) + j++) = *(mat + (n*row) + col);
+ 
+                // Row is filled, so increase row index and
+                // reset col index
+                if (j == n - 1)
+                {
+                    j = 0;
+                    i++;
+                }
+            }
+        }
+    }
+}
+ 
+//Recursive function for finding determinant of matrix.
+// n is current dimension of mat
+double determinantOfMatrix(double * mat, int size, int n) {
+    double D = 0; // Initialize result
+ 
+    //  Base case : if matrix contains single element
+    if (n == 1)
+        return *(mat);
+ 
+    double * temp = malloc(sizeof(double) * size * size); // To store cofactors
+ 
+    int sign = 1;  // To store sign multiplier
+ 
+     // Iterate for each element of first row
+    for (int f = 0; f < n; f++) {
+        // Getting Cofactor of mat[0][f]
+        getCofactor(mat, temp, 0, f, n);
+        D += sign * *(mat + f) * determinantOfMatrix(temp, size, n - 1);
+ 
+        // terms are to be added with alternate sign
+        sign = -sign;
+    }
+ 
+    return D;
 }
 
 void fillMatrixINputMethod1(int *ptr, int length, int width) {
