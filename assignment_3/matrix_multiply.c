@@ -11,13 +11,14 @@ void fillMatrixINputMethod1(int *, int, int);
 void fillMatrixInputMethod2(double * , int);
 void matrixMultiplyKTimes();
 void multiplyMatrices(MPI_Comm, int[], int, double *, double *, int) ;
-void matrixMultiply();
+void simpleMultiplyMatrices(double *, double *, double *, int);
 int randInt();
 void send(MPI_Comm, int, double *, int, int);
 void receive(MPI_Comm, int, double *, int, int);
 void printMatrix(double *, int);
 void printArray(double *, int);
 void logOutput(char *);
+void wait_(int);
 
 int main(int argc, char **argv) {
     
@@ -31,14 +32,13 @@ int main(int argc, char **argv) {
     MPI_Comm_size(MPI_COMM_WORLD, &world_size); 			// get total number of processes
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);					// get process rank number
     MPI_Get_processor_name(processor_name, &name_len); 		// get the processor name
-    
     gethostname(hostname, 255);								// non-MPI function to get the host name
+
     printf("Hello world! I am process number: %d from processor %s on host %s out of %d processors\n", rank, processor_name, hostname, world_size);
 
     matrixMultiplyKTimes();
 
     MPI_Finalize();
-
     return 0;
 }
 
@@ -63,8 +63,10 @@ void matrixMultiplyKTimes() {
     if(rank == SOURCE_NODE) {
         // generate the source matrix X
         fillMatrixInputMethod2(X, N);
+        printMatrix(X, N);
     }
 
+    wait_(rank);
     multiplyMatrices(Cart, coordinates, rank, X, X, N);
     free(X);
 }
@@ -93,10 +95,10 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
                 if(destinationId != SOURCE_NODE) {
                     // send data to this destination id
                     for(int k=0; k<blockSize; k++) {
-                        send(Cart, rank, X + (n * (i+k)) + j, blockSize, destinationId);
+                        send(Cart, rank, X + (n * ((i*blockSize)+k)) + (j*blockSize), blockSize, destinationId);
                     }
                     for(int k=0; k<blockSize; k++) {
-                        send(Cart, rank, Y + (n * (i+k)) + j, blockSize, destinationId);
+                        send(Cart, rank, Y + (n * ((i*blockSize)+k)) + (j*blockSize), blockSize, destinationId);
                     }
                 } else {
                     // copy data to A and B
@@ -120,85 +122,85 @@ void multiplyMatrices(MPI_Comm Cart, int coordinates[], int rank, double * X, do
         }
     }
 
-    printf("process %d has the following data \n", rank);
-    printMatrix(A, blockSize);
-    printMatrix(B, blockSize);
+    // wait_(rank);
+    // printf("process %d has the following data \n", rank);
+    // printMatrix(A, blockSize);
+    // printMatrix(B, blockSize);
 
     // MULTIPLICATION ITERATIONS
     double * tempArray = malloc(sizeof(double) * blockSize * blockSize);
-    for(int i=0; i<sqrtp; i++) {
+    for(int i=0; i<=sqrtp; i++) {
 
         // SIMPLY MULTIPLY A AND B IN EACH BLOCK AND ADD
         // THE RESULTS TO C
         simpleMultiplyMatrices(A, B, CTemp, blockSize);
         for(int i=0; i<blockSize*blockSize; i++) {
-            *(C + i) += *(CTemp + 1);
+            *(C + i) += *(CTemp + i);
         }
 
-        int limit = sqrtp - i - 1;
-
         // decide whether to left shift a row
-        if(coordinates[0] >= limit) {
+        if(coordinates[0] <= i) {
+
             // left shift A by 1 
-            printf("process %d left shifting by 1\n", rank);
+            // printf("process %d left shifting by 1\n", rank);
             int left, right;
             MPI_Cart_shift(Cart, 1, 1, &left, &right);
             printf("for process %d, right is %d, left is %d\n", rank, left, right);
             
             if(coordinates[1] == sqrtp - 1) {
-                // last process at the right
-                for(int j=0; j<blockSize; j++) {
-                    send(Cart, rank, A + (j*blockSize), blockSize, left);
-                }
-                for(int j=0; j<blockSize; j++) {
-                    receive(Cart, rank, A + (j*blockSize), blockSize, right);
-                }
+                // last process at the right, sends first
+                send(Cart, rank, A, blockSize*blockSize, right);
+                receive(Cart, rank, A, blockSize*blockSize, left);
             } else {
-                // not the last process at the right
-                for(int j=0; j<blockSize; j++) {
-                    receive(Cart, rank, tempArray + (j*blockSize), blockSize, right);
-                }
-                for(int j=0; j<blockSize; j++) {
-                    send(Cart, rank, A + (j*blockSize), blockSize, left);
-                }
-                memcpy(A, tempArray, sizeof(double) * sizeof(A));
+                // not the last process at the right, receives first
+                receive(Cart, rank, tempArray, blockSize*blockSize, left);
+                send(Cart, rank, A, blockSize*blockSize, right);
+                memcpy(A, tempArray, sizeof(double) * blockSize * blockSize);
             }
         }
 
         // decide whether to up shift a column
-        if(coordinates[1] >= limit) {
+        if(coordinates[1] <= i) {
             // up shift B by 1
-            printf("process %d up shifting by 1\n", rank);
+            // printf("process %d up shifting by 1\n", rank);
             int up, down;
             MPI_Cart_shift(Cart, 0, 1, &up, &down);
-            printf("for process %d, up is %d, down in %d\n", rank, up, down);
+            // printf("for process %d, up is %d, down in %d\n", rank, up, down);
 
             if(coordinates[0] == sqrtp - 1) {
-                // last process at the bottom
-                for(int j=0; j<blockSize; j++) {
-                    send(Cart, rank, A + (j*blockSize), blockSize, up);
-                }
-                for(int j=0; j<blockSize; j++) {
-                    receive(Cart, rank, A + (j*blockSize), blockSize, down);
-                }
+                // last process at the bottom, sends first
+                send(Cart, rank, B, blockSize*blockSize, up);
+                receive(Cart, rank, B, blockSize*blockSize, down);
             } else {
-                // not the last process at the bottom
-                for(int j=0; j<blockSize; j++) {
-                    receive(Cart, rank, tempArray + (j*blockSize), blockSize, down);
-                }
-                for(int j=0; j<blockSize; j++) {
-                    send(Cart, rank, A + (j*blockSize), blockSize, up);
-                }
-                memcpy(A, tempArray, sizeof(double) * sizeof(A));
+                // not the last process at the bottom, receives first
+                receive(Cart, rank, tempArray, blockSize*blockSize, down);
+                send(Cart, rank, B, blockSize*blockSize, up);
+                memcpy(B, tempArray, sizeof(double) * sizeof(A));
             }
         }
 
+        wait_(rank);
+        printf("after %d iterations, process %d has the following data \n", i, rank);
+        printMatrix(A, blockSize);
+        printf("------------------------\n");
+        printMatrix(B, blockSize);
+        printf("------------------------\n");
+        printMatrix(CTemp, blockSize);
+        printf("------------------------\n");
+        printMatrix(C, blockSize);
+        printf("------------------------\n");
+
     }
+
+    wait(rank);
+    printf("&&&&&&&&&&&& matrix C for process %d\n", rank);
+    printMatrix(C, blockSize);
     
     free(tempArray);
     free(A);
     free(B);
     free(C);
+    free(CTemp);
 }
 
 void simpleMultiplyMatrices(double * A, double * B, double * C, int n) {
@@ -206,7 +208,7 @@ void simpleMultiplyMatrices(double * A, double * B, double * C, int n) {
         for(int j=0; j<n; j++) {
             *(C + (n*i) + j) = 0;
             for(int k=0; k<n; k++) {
-                *(C + (n*i) + j) = *(A + (n*i) + k) * *(B + (n*k) + j);
+                *(C + (n*i) + j) += *(A + (n*i) + k) * *(B + (n*k) + j);
             }
         }
     }
@@ -228,9 +230,13 @@ void fillMatrixInputMethod2(double * ptr, int n) {
 
     // copy the first row to every other ith row
     // after circular right shifting it by i positions
+    int k = 0;
     for(int i=0; i<n; i++) {
-        memcpy(ptr + (i*n) + i, row, sizeof(double)*(n - i));
-        memcpy(ptr + (i*n), row + n - i, sizeof(double)*i);
+        k += i;
+        printf("k = %d\n", k);
+        int j = k % n;
+        memcpy(ptr + (i*n) + j, row, sizeof(double)*(n - j));
+        memcpy(ptr + (i*n), row + n - j, sizeof(double)*j);
     }
 }
 
@@ -304,4 +310,11 @@ void logOutput(char * string) {
 	fprintf(f, string);
 	fclose(f);
 	// printf(string);
+}
+
+void wait_(int rank) {
+    int m = 0;
+    while(m < rank * 300000000) {
+        m++;
+    }
 }
