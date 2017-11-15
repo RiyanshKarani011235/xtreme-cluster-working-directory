@@ -71,11 +71,11 @@ void matrixMultiplyKTimes() {
     }
 
     // multiply K times
-    for(int i=0; i<K; i++) {
+    // for(int i=0; i<K; i++) {
         // multiply matrices using Canon's algorithm
         multiplyMatrices(Cart, coordinates, rank, X, Y, Result, N);
-        memcpy(Y, Result, sizeof(double) * N * N);
-    }
+        // memcpy(Y, Result, sizeof(double) * N * N);
+    // }
 
     // if(rank == SOURCE_NODE) {
     //     // compute determinant at the source node
