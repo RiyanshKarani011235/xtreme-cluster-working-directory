@@ -4,7 +4,7 @@
 #include <mpi.h>
 
 #define SOURCE_NODE                     0
-#define N                               64
+#define N                               8
 #define p                               4
 #define K                               1
 
@@ -282,7 +282,7 @@ double determinantOfMatrix(double * mat, int size, int n) {
      // Iterate for each element of first row
     for (int f = 0; f < n; f++) {
         // Getting Cofactor of mat[0][f]
-        getCofactor(mat, temp, 0, f, n);
+        getCofactor(mat, temp, 0, f, n)
         D += sign * *(mat + f) * determinantOfMatrix(temp, size, n - 1);
  
         // terms are to be added with alternate sign
