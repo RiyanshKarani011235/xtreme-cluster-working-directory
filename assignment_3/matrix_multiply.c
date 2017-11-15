@@ -4,7 +4,7 @@
 #include <mpi.h>
 
 #define SOURCE_NODE                     0
-#define N                               2048
+#define N                               64
 #define p                               4
 #define K                               1
 
